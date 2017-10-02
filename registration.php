@@ -2,6 +2,6 @@
 
 \Magento\Framework\Component\ComponentRegistrar::register(
     \Magento\Framework\Component\ComponentRegistrar::MODULE,
-    'OxCOm_MagentoCurrencyServices',
+    'OxCom_MagentoCurrencyServices',
     __DIR__
 );

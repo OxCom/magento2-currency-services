@@ -1,11 +1,11 @@
 <?php
 
-namespace OxCom\CurrencyServices\Model\Currency\Import;
+namespace OxCom\MagentoCurrencyServices\Model\Currency\Import;
 
 /**
  * Class Yahoo
  *
- * @package OxCom\CurrencyServices\Model\Currency\Import
+ * @package OxCom\MagentoCurrencyServices\Model\Currency\Import
  */
 class Yahoo extends AbstractSource
 {

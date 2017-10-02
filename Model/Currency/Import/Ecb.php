@@ -1,13 +1,13 @@
 <?php
 
-namespace OxCom\CurrencyServices\Model\Currency\Import;
+namespace OxCom\MagentoCurrencyServices\Model\Currency\Import;
 
-use OxCom\CurrencyServices\Model\Currency\Import\Ecb\Rates;
+use OxCom\MagentoCurrencyServices\Model\Currency\Import\Ecb\Rates;
 
 /**
  * Class Ecb
  *
- * @package OxCom\CurrencyServices\Model\Currency\Import
+ * @package OxCom\MagentoCurrencyServices\Model\Currency\Import
  */
 class Ecb extends AbstractSource
 {

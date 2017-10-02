@@ -1,13 +1,13 @@
 <?php
 
-namespace OxCom\CurrencyServices\Model\Currency\Import\Fixer;
+namespace OxCom\MagentoCurrencyServices\Model\Currency\Import\Fixer;
 
-use OxCom\CurrencyServices\Model\Currency\Import\AbstractDto;
+use OxCom\MagentoCurrencyServices\Model\Currency\Import\AbstractDto;
 
 /**
  * Class Rates
  *
- * @package OxCom\CurrencyServices\Model\Currency\Import\Fixer
+ * @package OxCom\MagentoCurrencyServices\Model\Currency\Import\Fixer
  */
 class Rates extends AbstractDto
 {

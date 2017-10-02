@@ -1,13 +1,13 @@
 <?php
 
-namespace OxCom\CurrencyServices\Test\Model\Currency\Import;
+namespace OxCom\MagentoCurrencyServices\Test\Model\Currency\Import;
 
-use OxCom\CurrencyServices\Test\Model\AbstractTestCase;
+use OxCom\MagentoCurrencyServices\Test\Model\AbstractTestCase;
 
 /**
  * Class GoogleTest
  *
- * @package OxCom\CurrencyServices\Test\Model\Currency\Import
+ * @package OxCom\MagentoCurrencyServices\Test\Model\Currency\Import
  */
 class SourceTest extends AbstractTestCase
 {
@@ -20,7 +20,7 @@ class SourceTest extends AbstractTestCase
      */
     public function testSources($sourceClass)
     {
-        /** @var \OxCom\CurrencyServices\Model\Currency\Import\Google $source */
+        /** @var \OxCom\MagentoCurrencyServices\Model\Currency\Import\Google $source */
         $source = $this->om->getObject($sourceClass);
 
         $method = new \ReflectionMethod($source, '_convert');
@@ -41,10 +41,10 @@ class SourceTest extends AbstractTestCase
     public function generateSource()
     {
         return [
-            [\OxCom\CurrencyServices\Model\Currency\Import\Google::class],
-            [\OxCom\CurrencyServices\Model\Currency\Import\Yahoo::class],
-            [\OxCom\CurrencyServices\Model\Currency\Import\Fixer::class],
-            [\OxCom\CurrencyServices\Model\Currency\Import\Ecb::class],
+            [\OxCom\MagentoCurrencyServices\Model\Currency\Import\Google::class],
+            [\OxCom\MagentoCurrencyServices\Model\Currency\Import\Yahoo::class],
+            [\OxCom\MagentoCurrencyServices\Model\Currency\Import\Fixer::class],
+            [\OxCom\MagentoCurrencyServices\Model\Currency\Import\Ecb::class],
         ];
     }
 }

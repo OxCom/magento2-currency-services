@@ -1,13 +1,13 @@
 <?php
 
-namespace OxCom\CurrencyServices\Test\Model;
+namespace OxCom\MagentoCurrencyServices\Test\Model;
 
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class AbstractTestCase
  *
- * @package OxCom\CurrencyServices\Test\Model
+ * @package OxCom\MagentoCurrencyServices\Test\Model
  */
 abstract class AbstractTestCase extends TestCase
 {

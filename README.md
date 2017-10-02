@@ -8,14 +8,19 @@ This is a module that allows to update currency rates from addition external sou
 4. [Fixer](http://fixer.io/)
 
 ## Install
-N/A
+```bash
+$ composer require oxcom/magento-currency-services
+$ bin/magento module:enable OxCom_MagentoCurrencyServices
+$ bin/magento setup:upgrade
+$ php bin/magento setup:di:compile
+```
 
 ## Tests
 Test will be performed on real sources, so internet connection is required.
 
 ```bash
 $ composer install
-$ vendor/bin/phpunit -c tests/phpunit.xml
+$ vendor/bin/phpunit -c Test/phpunit.xml
 ```
 
 ## Thanks

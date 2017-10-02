@@ -1,11 +1,11 @@
 <?php
 
-namespace OxCom\CurrencyServices\Model\Currency\Import;
+namespace OxCom\MagentoCurrencyServices\Model\Currency\Import;
 
 /**
  * Class AbstractSource
  *
- * @package OxCom\CurrencyServices\Model\Currency\Import
+ * @package OxCom\MagentoCurrencyServices\Model\Currency\Import
  */
 abstract class AbstractSource extends \Magento\Directory\Model\Currency\Import\AbstractImport
 {

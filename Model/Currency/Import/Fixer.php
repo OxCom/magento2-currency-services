@@ -1,13 +1,13 @@
 <?php
 
-namespace OxCom\CurrencyServices\Model\Currency\Import;
+namespace OxCom\MagentoCurrencyServices\Model\Currency\Import;
 
-use OxCom\CurrencyServices\Model\Currency\Import\Fixer\Rates;
+use OxCom\MagentoCurrencyServices\Model\Currency\Import\Fixer\Rates;
 
 /**
  * Class Fixer
  *
- * @package OxCom\CurrencyServices\Model\Currency\Import
+ * @package OxCom\MagentoCurrencyServices\Model\Currency\Import
  */
 class Fixer extends AbstractSource
 {

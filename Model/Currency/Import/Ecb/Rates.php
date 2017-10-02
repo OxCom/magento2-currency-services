@@ -1,13 +1,13 @@
 <?php
 
-namespace OxCom\CurrencyServices\Model\Currency\Import\Ecb;
+namespace OxCom\MagentoCurrencyServices\Model\Currency\Import\Ecb;
 
-use OxCom\CurrencyServices\Model\Currency\Import\AbstractDto;
+use OxCom\MagentoCurrencyServices\Model\Currency\Import\AbstractDto;
 
 /**
  * Class Rates
  *
- * @package OxCom\CurrencyServices\Model\Currency\Import\Ecb
+ * @package OxCom\MagentoCurrencyServices\Model\Currency\Import\Ecb
  */
 class Rates extends AbstractDto
 {
