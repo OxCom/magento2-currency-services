@@ -2,14 +2,12 @@
 
 namespace OxCom\MagentoCurrencyServices\Test\Model;
 
-use PHPUnit\Framework\TestCase;
-
 /**
  * Class AbstractTestCase
  *
  * @package OxCom\MagentoCurrencyServices\Test\Model
  */
-abstract class AbstractTestCase extends TestCase
+abstract class AbstractTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
