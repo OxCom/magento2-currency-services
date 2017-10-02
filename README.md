@@ -12,7 +12,7 @@ This is a module that allows to update currency rates from addition external sou
 $ composer require oxcom/magento-currency-services
 $ bin/magento module:enable OxCom_MagentoCurrencyServices
 $ bin/magento setup:upgrade
-$ php bin/magento setup:di:compile
+$ bin/magento setup:di:compile
 ```
 
 ## Tests
