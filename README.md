@@ -23,5 +23,7 @@ $ composer install
 $ vendor/bin/phpunit -c Test/phpunit.xml
 ```
 
+Some info how to run tests in [Travis + Magento Module](https://gordonlesti.com/magento2-extension-development-with-travis-ci/)
+
 ## Thanks
 Big thanks for my wife.

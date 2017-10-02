@@ -21,9 +21,12 @@ class Ecb extends AbstractSource
      * @param   string $currencyTo
      *
      * @return  float
+     *
+     * @codingStandardsIgnoreStart
      */
     protected function _convert($currencyFrom, $currencyTo)
     {
+        // @codingStandardsIgnoreStop
         $this->doRequestDelay();
 
         $rate = null;

@@ -16,6 +16,7 @@ abstract class AbstractSource extends \Magento\Directory\Model\Currency\Import\A
     const DEFAULT_TIMEOUT = 100;
 
     /**
+     * @codingStandardsIgnoreStart
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $_scopeConfig;
@@ -26,6 +27,7 @@ abstract class AbstractSource extends \Magento\Directory\Model\Currency\Import\A
     protected $_httpClient;
 
     /**
+     * @codingStandardsIgnoreStop
      * @param \Magento\Directory\Model\CurrencyFactory           $currencyFactory
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      */

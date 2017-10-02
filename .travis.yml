@@ -1,0 +1,21 @@
+language: php
+
+sudo: false
+
+php:
+    - 5.6
+    - 7.0
+    - 7.1
+
+install:
+    - composer install --prefer-dist
+
+script:
+    - php vendor/bin/phpcs --standard=PSR2 Model/
+    - php vendor/bin/phpcpd Model/
+    - php vendor/bin/phpunit -c Test/phpunit.xml
+
+env:
+    global:
+        secure: "CgjC+w1QC4L1N8iuXcYSWQRGRnEWj1QcQpGpg9IxK2TR82eKCBXRc7fbmhpyegiHfWXInEiAquWRxY/nz/PBNGA7dE/iV2lLByZLuyaRnKWVlgvZwv+mfyiCtRMBykNhJH1HmnbIWKXb84OWo0C0RXQUY/kmVpRKBzxqEMhcjn8uG24aSbfvjFx6tVuXTyv8Lmqb/3lCgdOchH/piA5ETALNiplhXWbVTSATV6xSGh+q53v0DpWoJgtybcDer/HCBGYgwCpOmnxWdQEuOy4WASmGrjq42UgemWNkjjyjT8Xln4aAyQakfqV3VjKZ8zoKVLZQqVDYWcxXK5+jmTqQMc5omtZnboaNn9+XJ14lgtub49NjEiBc5NflMhDLuTe6Z/6E2J1jL8TBar5x61hbYEz9cIJ3NOzAVaIleb5cCk7E8ZQNFJP/JCm04YU3lDrUeXORIBSrqCunUS6X6q1H7Ql8Vf13m9HBzJBpsA/EP4Z1IONigplgFaPMmnnty2Aots958/HxH3O2600HEPSqDTuHw1ZHOt9Se/hiInG3M7JpXcwDLenrO8EGFb32nn0776MbYYCMjNRref1+R6rqy5uI5GuvLrnaWZyKuXvr07A3iSrcUf0buT+jPK1jwJazFvJnAnbmD+mcN0Mn+hliyTt1rYXa/lDeYq8skmJ6VtY="
+        secure: "vsfg4SGgyRLfa1KVvpKXZJptty3cFBZqobVRV5VZ0rlmAuRoDyTy4/N+mvAVUNm5pEymSUNCU2wMWRnTKmqQc2Tnxxe6F1vX6+UDH2xoPJL6/GaMIDqRkln4828LVlvNVxzzxEQTJ4rQAR6q2HrZrHDaGDOs9u+/jp2QRZJvJGIGGyJWLELKyyZ4B3mpJ9dEhKjaWtg42Pt5LVnnTaIiDeiqMwa8iK29RNDzdkWMcwow9mNcOTs1bcIIfm+/bAREjqO/++ppWNuNOdd5zczq3bLi299FQAhtPxEmPRiS3fqHY8lZFG88hzSqfQvUShaFOEvZ0j3QwjeE1M45aQ+3gmovsk8n/EVtHCGCHU9Flvl5Beg2EZztunpHidHg5LnrwDDze51pokkEo+sRFGd7FNM9CIn+4nuqjpo4B2E8gD2O4RjPp8jK6qKttMv0ZtzQW3pi1yupmED0tdGIHzqaIS4YMFrp+/HT/ynWuxG9s8G5o/cQGGbj3qmryGVOm/wF02I4JCPDw2RRVPRvQmci5VwkoVLA9g1x7kkOkz39TO5AA2G0ZqieJS3Nw9oi/Ce3CGxiRb9pHYX1xt7kRvnS8TL0jzIwBwYxbVSvMK6lbHKbaNYRoR9g5gg8Oqb1Nz1MbXlrlKuos7t+YO4R6T9LAl8ciwqVFkJABfeWseLEH5Q="
