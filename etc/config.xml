@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <currency>
+            <ecb>
+                <timeout>100</timeout>
+                <delay>1</delay>
+            </ecb>
+            <fixer>
+                <timeout>100</timeout>
+                <delay>1</delay>
+            </fixer>
+            <google>
+                <timeout>100</timeout>
+                <delay>1</delay>
+            </google>
+            <yahoo>
+                <timeout>100</timeout>
+                <delay>1</delay>
+            </yahoo>
+        </currency>
+    </default>
+</config>

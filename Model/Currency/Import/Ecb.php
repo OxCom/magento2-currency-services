@@ -1,0 +1,64 @@
+<?php
+
+namespace OxCom\CurrencyServices\Model\Currency\Import;
+
+use OxCom\CurrencyServices\Model\Currency\Import\Ecb\Rates;
+
+/**
+ * Class Ecb
+ *
+ * @package OxCom\CurrencyServices\Model\Currency\Import
+ */
+class Ecb extends AbstractSource
+{
+    const SOURCE_NAME = 'google';
+    const SOURCE_LINK = 'http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml';
+
+    /**
+     * Retrieve rate
+     *
+     * @param   string $currencyFrom
+     * @param   string $currencyTo
+     *
+     * @return  float
+     */
+    protected function _convert($currencyFrom, $currencyTo)
+    {
+        $this->doRequestDelay();
+
+        $rate = null;
+        $url  = static::SOURCE_LINK;
+
+        try {
+            $response = $this->request($url);
+
+            // Default rates are EUR to some currency
+            $xml = simplexml_load_string($response);
+            $list = [];
+
+            foreach ($xml->Cube->Cube->Cube as $row) {
+                /** @var \SimpleXMLElement $row */
+                $currency = (string)$row['currency'];
+
+                $list[$currency] = (string)$row['rate'];
+            }
+
+            if (empty($list)) {
+                throw new \Exception();
+            }
+
+            $rates = new Rates(['rates' => $list]);
+            $rate = $rates->getRates($currencyFrom, $currencyTo);
+
+            if (empty($list)) {
+                throw new \Exception();
+            }
+
+            $rate = (double)$rate;
+        } catch (\Exception $e) {
+            $this->_messages[] = __("We can't retrieve a rate from %1.", $url);
+        }
+
+        return $rate;
+    }
+}
