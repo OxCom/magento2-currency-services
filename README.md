@@ -11,7 +11,7 @@ This is a module that allows to update currency rates from addition external sou
 
 ## Install
 ```bash
-$ composer require oxcom/magento-currency-services
+$ composer require oxcom/magento2-currency-services
 $ bin/magento module:enable OxCom_MagentoCurrencyServices
 $ bin/magento setup:upgrade
 $ bin/magento setup:di:compile
