@@ -1,5 +1,5 @@
 {
-  "name": "oxcom/magento-currency-services",
+  "name": "oxcom/magento2-currency-services",
   "description": "This is a module that allows to update currency rates from addition external sources.",
   "type": "magento2-module",
   "license": "LGPL-3.0",
