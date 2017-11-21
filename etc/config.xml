@@ -14,10 +14,6 @@
                 <timeout>100</timeout>
                 <delay>1</delay>
             </google>
-            <yahoo>
-                <timeout>100</timeout>
-                <delay>1</delay>
-            </yahoo>
         </currency>
     </default>
 </config>
