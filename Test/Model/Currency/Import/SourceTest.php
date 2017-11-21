@@ -42,7 +42,6 @@ class SourceTest extends AbstractTestCase
     {
         return [
             [\OxCom\MagentoCurrencyServices\Model\Currency\Import\Google::class],
-            [\OxCom\MagentoCurrencyServices\Model\Currency\Import\Yahoo::class],
             [\OxCom\MagentoCurrencyServices\Model\Currency\Import\Fixer::class],
             [\OxCom\MagentoCurrencyServices\Model\Currency\Import\Ecb::class],
         ];

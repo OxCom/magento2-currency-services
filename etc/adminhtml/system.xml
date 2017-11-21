@@ -29,15 +29,6 @@
                     <label>Request Delay Time in Seconds</label>
                 </field>
             </group>
-            <group id="yahoo" translate="label" sortOrder="41" showInDefault="1" showInWebsite="0" showInStore="0">
-                <label>Yahoo Finance</label>
-                <field id="timeout" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="0" showInStore="0">
-                    <label>Connection Timeout in Seconds</label>
-                </field>
-                <field id="delay" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
-                    <label>Request Delay Time in Seconds</label>
-                </field>
-            </group>
         </section>
     </system>
 </config>

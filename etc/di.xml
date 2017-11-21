@@ -16,10 +16,6 @@
                     <item name="label" xsi:type="string">Google</item>
                     <item name="class" xsi:type="string">OxCom\MagentoCurrencyServices\Model\Currency\Import\Google</item>
                 </item>
-                <item name="yahoo" xsi:type="array">
-                    <item name="label" xsi:type="string">Yahoo</item>
-                    <item name="class" xsi:type="string">OxCom\MagentoCurrencyServices\Model\Currency\Import\Yahoo</item>
-                </item>
             </argument>
         </arguments>
     </type>
