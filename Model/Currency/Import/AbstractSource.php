@@ -2,12 +2,16 @@
 
 namespace OxCom\MagentoCurrencyServices\Model\Currency\Import;
 
+use Magento\Directory\Model\Currency\Import\AbstractImport;
+use Magento\Directory\Model\CurrencyFactory;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+
 /**
  * Class AbstractSource
  *
  * @package OxCom\MagentoCurrencyServices\Model\Currency\Import
  */
-abstract class AbstractSource extends \Magento\Directory\Model\Currency\Import\AbstractImport
+abstract class AbstractSource extends AbstractImport
 {
     const SOURCE_NAME = 'abstract';
     const SOURCE_LINK = '';
@@ -28,14 +32,14 @@ abstract class AbstractSource extends \Magento\Directory\Model\Currency\Import\A
 
     /**
      * @codingStandardsIgnoreStop
+     *
      * @param \Magento\Directory\Model\CurrencyFactory           $currencyFactory
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      */
-    public function __construct(
-        \Magento\Directory\Model\CurrencyFactory $currencyFactory,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-    ) {
+    public function __construct(CurrencyFactory $currencyFactory, ScopeConfigInterface $scopeConfig)
+    {
         parent::__construct($currencyFactory);
+
         $this->_scopeConfig = $scopeConfig;
         $this->_httpClient  = new \Magento\Framework\HTTP\ZendClient();
     }
@@ -73,7 +77,7 @@ abstract class AbstractSource extends \Magento\Directory\Model\Currency\Import\A
         }
 
         $value = (int)$this->_scopeConfig->getValue(
-            'currency/google/timeout',
+            'currency/' . $source . '/timeout',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         );
 
@@ -86,15 +90,19 @@ abstract class AbstractSource extends \Magento\Directory\Model\Currency\Import\A
      * @param string $url
      *
      * @return string
+     * @throws \Zend_Http_Client_Exception
      */
     protected function request($url)
     {
+        $agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
+            . 'Chrome/64.0.3282.186 Safari/537.36';
         $response = $this->_httpClient
-                        ->setUri($url)
-                        ->setConfig([
-                            'timeout' => $this->getRequestTimeout(),
-                        ])->request('GET')
-                        ->getBody();
+            ->setUri($url)
+            ->setHeaders('User-Agent', $agent)
+            ->setConfig([
+                'timeout' => $this->getRequestTimeout(),
+            ])->request('GET')
+            ->getBody();
 
         return $response;
     }

@@ -10,7 +10,7 @@ namespace OxCom\MagentoCurrencyServices\Model\Currency\Import;
 class Google extends AbstractSource
 {
     const SOURCE_NAME = 'google';
-    const SOURCE_LINK = 'https://finance.google.com/finance/converter?a=1&from={{CURRENCY_FROM}}&to={{CURRENCY_TO}}';
+    const SOURCE_LINK = 'https://www.google.com/search?safe=off&dcr=0&q=1000+{{CURRENCY_FROM}}+{{CURRENCY_TO}}&hl=en-EN';
 
     /**
      * Retrieve rate
@@ -37,13 +37,15 @@ class Google extends AbstractSource
             $response = $this->request($url);
 
             $matches = [];
-            preg_match('/bld>([+-]?([0-9]*[.])?[0-9]+)/', $response, $matches);
+            preg_match_all('/value="([0-9|,|.]+)"[^<]+type="number"/mi', $response, $matches);
 
             if (empty($matches[1])) {
                 throw new \Exception();
             }
 
-            $rate = (double)$matches[1];
+            $rate = str_replace(',', '.', $matches[1][1]);
+            $rate = (double)($rate);
+            $rate = $rate / 1000;
         } catch (\Exception $e) {
             $this->_messages[] = __("We can't retrieve a rate from %1.", $url);
         }

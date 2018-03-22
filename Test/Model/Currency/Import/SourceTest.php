@@ -2,6 +2,10 @@
 
 namespace OxCom\MagentoCurrencyServices\Test\Model\Currency\Import;
 
+use OxCom\MagentoCurrencyServices\Model\Currency\Import\Ecb;
+use OxCom\MagentoCurrencyServices\Model\Currency\Import\Fixer;
+use OxCom\MagentoCurrencyServices\Model\Currency\Import\Google;
+use OxCom\MagentoCurrencyServices\Test\Generate\Fixtures;
 use OxCom\MagentoCurrencyServices\Test\Model\AbstractTestCase;
 
 /**
@@ -12,17 +16,44 @@ use OxCom\MagentoCurrencyServices\Test\Model\AbstractTestCase;
 class SourceTest extends AbstractTestCase
 {
     /**
+     * @var bool
+     */
+    public static $isReal;
+
+    public static function setUpBeforeClass()
+    {
+        // every week switch to real or mocked response to avoid loose of source
+        $date           = new \DateTime();
+        $week           = $date->format("W");
+        static::$isReal = $week % 2 == 0;
+
+        if (static::$isReal) {
+            fwrite(STDOUT, "!!! Test will be executed on real sources !!!" . PHP_EOL . PHP_EOL);
+        }
+    }
+
+    /**
      * Perform tests on real source providers
      *
      * @dataProvider generateSource
      *
      * @param $sourceClass
+     *
+     * @throws \ReflectionException
      */
     public function testSources($sourceClass)
     {
-        /** @var \OxCom\MagentoCurrencyServices\Model\Currency\Import\Google $source */
-        $source = $this->om->getObject($sourceClass);
+        $constructArguments = $this->om->getConstructArguments($sourceClass, []);
+        $source = $this->getMockBuilder($sourceClass)
+            ->setConstructorArgs($constructArguments)
+            ->setMethods(static::$isReal ? [] : ['request'])
+            ->getMock();
 
+        if (!static::$isReal) {
+            $source->expects($this->any())->method('request')->willReturn(Fixtures::get($sourceClass));
+        }
+
+        /** @var \OxCom\MagentoCurrencyServices\Model\Currency\Import\Google $source */
         $method = new \ReflectionMethod($source, '_convert');
         $method->setAccessible(true);
 
@@ -30,9 +61,9 @@ class SourceTest extends AbstractTestCase
         $value = $method->invoke($source, 'USD', 'RUB');
         $dx    = microtime(true) - $time;
 
-        $this->assertTrue($dx > 1);
-        $this->assertNotNull($value);
-        $this->assertTrue($value > 0);
+        $this->assertTrue($dx > 1, 'Delay should be more that 1 min');
+        $this->assertNotNull($value, "There is no response from source");
+        $this->assertTrue($value > 0, "There should be value more than 0");
     }
 
     /**
@@ -41,9 +72,9 @@ class SourceTest extends AbstractTestCase
     public function generateSource()
     {
         return [
-            [\OxCom\MagentoCurrencyServices\Model\Currency\Import\Google::class],
-            [\OxCom\MagentoCurrencyServices\Model\Currency\Import\Fixer::class],
-            [\OxCom\MagentoCurrencyServices\Model\Currency\Import\Ecb::class],
+            [Google::class],
+            [Fixer::class],
+            [Ecb::class],
         ];
     }
 }
