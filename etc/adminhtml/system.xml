@@ -19,6 +19,9 @@
                 <field id="delay" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Request Delay Time in Seconds</label>
                 </field>
+                <field id="token" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Access Token</label>
+                </field>
             </group>
             <group id="google" translate="label" sortOrder="42" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Google Finance</label>

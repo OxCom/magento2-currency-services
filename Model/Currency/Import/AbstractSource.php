@@ -18,6 +18,7 @@ abstract class AbstractSource extends AbstractImport
 
     const DEFAULT_DELAY   = 1;
     const DEFAULT_TIMEOUT = 100;
+    const DEFAULT_TOKEN   = '';
 
     /**
      * @codingStandardsIgnoreStart
@@ -82,6 +83,28 @@ abstract class AbstractSource extends AbstractImport
         );
 
         $value = empty($value) ? static::DEFAULT_TIMEOUT : $value;
+
+        return $value;
+    }
+
+    /**
+     * Get access token
+     *
+     * @return int|string
+     */
+    protected function getAccessToken()
+    {
+        $source = static::SOURCE_NAME;
+        if (empty($source) || $source === self::SOURCE_NAME) {
+            return static::DEFAULT_TOKEN;
+        }
+
+        $value = (int)$this->_scopeConfig->getValue(
+            'currency/' . $source . '/token',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
+
+        $value = empty($value) ? static::DEFAULT_TOKEN : $value;
 
         return $value;
     }
