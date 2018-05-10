@@ -28,15 +28,23 @@ class SourceTest extends AbstractTestCase
      */
     public function testSources($sourceClass, $from, $to)
     {
+        $token = getenv('FIXER_FREE_TOKEN');
         $constructArguments = $this->om->getConstructArguments($sourceClass, []);
         $source = $this->getMockBuilder($sourceClass)
             ->setConstructorArgs($constructArguments)
-            ->setMethods(static::$isReal ? [] : ['request'])
+            ->setMethods(static::$isReal ? ['getAccessToken'] : ['request', 'getAccessToken'])
             ->getMock();
 
+
         if (!static::$isReal) {
-            $source->expects($this->any())->method('request')->willReturn(Fixtures::get($sourceClass));
+            $source->expects($this->any())
+                   ->method('request')
+                   ->willReturn(Fixtures::get($sourceClass));
         }
+
+        $source->expects($this->any())
+               ->method('getAccessToken')
+               ->willReturn($token);
 
         /** @var \OxCom\MagentoCurrencyServices\Model\Currency\Import\Google $source */
         $method = new \ReflectionMethod($source, '_convert');
@@ -64,15 +72,22 @@ class SourceTest extends AbstractTestCase
      */
     public function testSourcesWithSameCurrency($sourceClass, $from, $to)
     {
+        $token = getenv('FIXER_FREE_TOKEN');
         $constructArguments = $this->om->getConstructArguments($sourceClass, []);
         $source = $this->getMockBuilder($sourceClass)
             ->setConstructorArgs($constructArguments)
-            ->setMethods(static::$isReal ? [] : ['request'])
+            ->setMethods(static::$isReal ? ['getAccessToken'] : ['request', 'getAccessToken'])
             ->getMock();
 
         if (!static::$isReal) {
-            $source->expects($this->any())->method('request')->willReturn(Fixtures::get($sourceClass));
+            $source->expects($this->any())
+                   ->method('request')
+                   ->willReturn(Fixtures::get($sourceClass));
         }
+
+        $source->expects($this->any())
+               ->method('getAccessToken')
+               ->willReturn($token);
 
         /** @var \OxCom\MagentoCurrencyServices\Model\Currency\Import\Google $source */
         $method = new \ReflectionMethod($source, '_convert');
@@ -93,9 +108,9 @@ class SourceTest extends AbstractTestCase
     public function generateSource()
     {
         return [
-            [Google::class, 'USD', 'RUB'],
-            [Fixer::class, 'USD', 'RUB'],
-            [Ecb::class, 'USD', 'RUB'],
+            [Google::class, 'USD', 'EUR'],
+            [Fixer::class, 'USD', 'EUR'],
+            [Ecb::class, 'USD', 'EUR'],
         ];
     }
 }

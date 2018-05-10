@@ -12,7 +12,7 @@ use OxCom\MagentoCurrencyServices\Model\Currency\Import\Fixer\Rates;
 class Fixer extends AbstractSource
 {
     const SOURCE_NAME = 'fixer';
-    const SOURCE_LINK = 'http://api.fixer.io/latest?access_key={{TOKEN}}}&base={{FROM}}&symbols={{TO}}';
+    const SOURCE_LINK = 'http://api.fixer.io/latest?access_key={{TOKEN}}&base={{FROM}}&symbols={{TO}}';
 
     /**
      * Retrieve rate

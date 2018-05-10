@@ -27,7 +27,7 @@ class Fixtures
                 break;
 
             case Fixer::class:
-                $rsp = '{"base":"USD","date":"2018-03-21","rates":{"RUB":57.482}}';
+                $rsp = '{"base":"USD","date":"2018-02-13","rates":{"EUR":0.806942}}';
                 break;
 
             case Google::class:
