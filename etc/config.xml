@@ -9,6 +9,7 @@
             <fixer>
                 <timeout>100</timeout>
                 <delay>1</delay>
+                <token>1</token>
             </fixer>
             <google>
                 <timeout>100</timeout>
