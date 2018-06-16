@@ -88,7 +88,6 @@ class Fixer extends AbstractSource
                 $rate = $rates->getRates($currencyTo);
             }
 
-
             if (empty($rate)) {
                 throw new \Exception();
             }
