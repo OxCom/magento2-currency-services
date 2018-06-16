@@ -29,6 +29,11 @@ class Ecb extends AbstractSource
         // @codingStandardsIgnoreStop
         $this->doRequestDelay();
 
+        // there should not be any calls
+        if ($currencyFrom === $currencyTo) {
+            return 1;
+        }
+
         $rate = null;
         $url  = static::SOURCE_LINK;
 

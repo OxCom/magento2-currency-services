@@ -29,6 +29,11 @@ class Google extends AbstractSource
         // @codingStandardsIgnoreStop
         $this->doRequestDelay();
 
+        // there should not be any calls
+        if ($currencyFrom === $currencyTo) {
+            return 1;
+        }
+
         $zero = rand(1, 5);
         $value = pow(10, $zero);
 

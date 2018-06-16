@@ -30,6 +30,11 @@ class Fixer extends AbstractSource
         // @codingStandardsIgnoreStop
         $this->doRequestDelay();
 
+        // there should not be any calls
+        if ($currencyFrom === $currencyTo) {
+            return 1;
+        }
+
         $rate = null;
         $url  = strtr(static::SOURCE_LINK, [
             '{{TOKEN}}' => $this->getAccessToken(),
