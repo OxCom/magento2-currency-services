@@ -38,6 +38,7 @@ class Google extends AbstractSource
         $value = pow(10, $zero);
 
         $rate = null;
+        $markup = $this->getCurrencyMarkup();
         $url  = strtr(static::SOURCE_LINK, [
             '{{CURRENCY_FROM}}' => $currencyFrom,
             '{{CURRENCY_TO}}'   => $currencyTo,
@@ -67,6 +68,6 @@ class Google extends AbstractSource
             $this->_messages[] = __("We can't retrieve a rate from %1.", $url);
         }
 
-        return $rate;
+        return $rate * $markup;
     }
 }
