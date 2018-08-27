@@ -5,15 +5,18 @@
             <ecb>
                 <timeout>100</timeout>
                 <delay>1</delay>
+		<currency_markup>0</currency_markup>
             </ecb>
             <fixer>
                 <timeout>100</timeout>
                 <delay>1</delay>
                 <token>1</token>
+		<currency_markup>0</currency_markup>
             </fixer>
             <google>
                 <timeout>100</timeout>
                 <delay>1</delay>
+		<currency_markup>0</currency_markup>
             </google>
         </currency>
     </default>

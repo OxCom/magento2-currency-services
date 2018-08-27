@@ -36,6 +36,7 @@ class Fixer extends AbstractSource
         }
 
         $rate = null;
+        $markup = $this->getCurrencyMarkup();
         $url  = strtr(static::SOURCE_LINK, [
             '{{TOKEN}}' => $this->getAccessToken(),
             '{{FROM}}'  => $currencyFrom,
@@ -102,6 +103,6 @@ class Fixer extends AbstractSource
             $this->_messages[] = __("We can't retrieve a rate from %1.", $url);
         }
 
-        return $rate;
+        return $rate * $markup;
     }
 }

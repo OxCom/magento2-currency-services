@@ -35,6 +35,7 @@ class Ecb extends AbstractSource
         }
 
         $rate = null;
+        $markup = $this->getCurrencyMarkup();
         $url  = static::SOURCE_LINK;
 
         try {
@@ -67,6 +68,6 @@ class Ecb extends AbstractSource
             $this->_messages[] = __("We can't retrieve a rate from %1.", $url);
         }
 
-        return $rate;
+        return $rate * $markup;
     }
 }

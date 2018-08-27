@@ -10,6 +10,9 @@
                 <field id="delay" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Request Delay Time in Seconds</label>
                 </field>
+                <field id="currency_markup" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Markup in percent</label>
+                </field>
             </group>
             <group id="fixer" translate="label" sortOrder="42" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Fixer IO</label>
@@ -22,6 +25,9 @@
                 <field id="token" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Access Token</label>
                 </field>
+                <field id="currency_markup" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Markup in percent</label>
+                </field>
             </group>
             <group id="google" translate="label" sortOrder="42" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Google Finance</label>
@@ -30,6 +36,9 @@
                 </field>
                 <field id="delay" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Request Delay Time in Seconds</label>
+                </field>
+                <field id="currency_markup" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Markup in percent</label>
                 </field>
             </group>
         </section>
