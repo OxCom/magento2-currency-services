@@ -9,8 +9,6 @@ matrix:
             env: MAGENTO_VERSION=^100.1
 
         -   php: 7.0
-            env: MAGENTO_VERSION=^100.1
-        -   php: 7.0
             env: MAGENTO_VERSION=^101.0
 
         -   php: 7.1
