@@ -23,17 +23,19 @@ class SourceTest extends AbstractTestCase
      * @param string $sourceClass
      * @param string $from
      * @param string $to
+     * @param double $expected
      *
      * @throws \ReflectionException
      */
-    public function testSources($sourceClass, $from, $to)
+    public function testSources($sourceClass, $from, $to, $expected)
     {
-        $token = getenv('FIXER_FREE_TOKEN');
-        $constructArguments = $this->om->getConstructArguments($sourceClass, []);
+        $token = \getenv('FIXER_FREE_TOKEN');
+
+        $cArgs  = $this->om->getConstructArguments($sourceClass, []);
         $source = $this->getMockBuilder($sourceClass)
-            ->setConstructorArgs($constructArguments)
-            ->setMethods(static::$isReal ? ['getAccessToken'] : ['request', 'getAccessToken'])
-            ->getMock();
+                       ->setConstructorArgs($cArgs)
+                       ->setMethods(static::$isReal ? ['getAccessToken'] : ['request', 'getAccessToken'])
+                       ->getMock();
 
 
         if (!static::$isReal) {
@@ -50,13 +52,17 @@ class SourceTest extends AbstractTestCase
         $method = new \ReflectionMethod($source, '_convert');
         $method->setAccessible(true);
 
-        $time  = microtime(true);
+        $time  = \microtime(true);
         $value = $method->invoke($source, $from, $to);
-        $dx    = microtime(true) - $time;
+        $dx    = \microtime(true) - $time;
 
         $this->assertTrue($dx > 1, 'Delay should be more that 1 min');
         $this->assertNotNull($value, "There is no response from source");
         $this->assertTrue($value > 0, "There should be value more than 0");
+
+        if (!static::$isReal) {
+            $this->assertEquals($expected, $value);
+        }
     }
 
     /**
@@ -72,12 +78,13 @@ class SourceTest extends AbstractTestCase
      */
     public function testSourcesWithSameCurrency($sourceClass, $from, $to)
     {
-        $token = getenv('FIXER_FREE_TOKEN');
-        $constructArguments = $this->om->getConstructArguments($sourceClass, []);
+        $token = \getenv('FIXER_FREE_TOKEN');
+
+        $cArgs  = $this->om->getConstructArguments($sourceClass, []);
         $source = $this->getMockBuilder($sourceClass)
-            ->setConstructorArgs($constructArguments)
-            ->setMethods(static::$isReal ? ['getAccessToken'] : ['request', 'getAccessToken'])
-            ->getMock();
+                       ->setConstructorArgs($cArgs)
+                       ->setMethods(static::$isReal ? ['getAccessToken'] : ['request', 'getAccessToken'])
+                       ->getMock();
 
         if (!static::$isReal) {
             $source->expects($this->any())
@@ -93,9 +100,9 @@ class SourceTest extends AbstractTestCase
         $method = new \ReflectionMethod($source, '_convert');
         $method->setAccessible(true);
 
-        $time  = microtime(true);
+        $time  = \microtime(true);
         $value = $method->invoke($source, $from, $from);
-        $dx    = microtime(true) - $time;
+        $dx    = \microtime(true) - $time;
 
         $this->assertTrue($dx > 1, 'Delay should be more that 1 min');
         $this->assertEquals(1, $value);
@@ -108,9 +115,9 @@ class SourceTest extends AbstractTestCase
     public function generateSource()
     {
         return [
-            [Google::class, 'USD', 'EUR'],
-            [Fixer::class, 'USD', 'EUR'],
-            [Ecb::class, 'USD', 'EUR'],
+            [Google::class, 'USD', 'EUR', 0.885715],
+            [Fixer::class, 'USD', 'EUR', 0.88726],
+            [Ecb::class, 'USD', 'EUR', 0.892857],
         ];
     }
 }

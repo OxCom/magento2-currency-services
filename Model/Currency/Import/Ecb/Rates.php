@@ -3,6 +3,7 @@
 namespace OxCom\MagentoCurrencyServices\Model\Currency\Import\Ecb;
 
 use OxCom\MagentoCurrencyServices\Model\Currency\Import\AbstractDto;
+use OxCom\MagentoCurrencyServices\Model\Currency\Import\AbstractSource;
 
 /**
  * Class Rates
@@ -76,7 +77,12 @@ class Rates extends AbstractDto
             case $currencyTo === $this->getBase():
                 // from something to EUR
                 $rate = $this->val($this->rates, $currencyFrom);
-                $rate = empty($rate) ? null : (1 / $rate);
+                if (empty($rate)) {
+                    $rate = null;
+                } else {
+                    $rate = \bcdiv(1, $rate, AbstractSource::SCALE);
+                }
+
                 break;
 
             default:
@@ -95,11 +101,13 @@ class Rates extends AbstractDto
                  *
                  * x currency-to = 1 currency-from * b currency-to / a currency-from
                  */
-                $rateFrom = (double)$this->val($this->rates, $currencyFrom);
-                $rateTo   = (double)$this->val($this->rates, $currencyTo);
-                $rate     = empty($rateFrom) || empty($rateTo) ? null : ($rateTo / $rateFrom);
+                $rateFrom = $this->val($this->rates, $currencyFrom);
+                $rateTo   = $this->val($this->rates, $currencyTo);
+                $rate     = (empty($rateFrom) || empty($rateTo))
+                    ? null
+                    : \bcdiv($rateTo, $rateFrom, AbstractSource::SCALE);
         }
 
-        return $rate;
+        return (double)$rate;
     }
 }

@@ -34,8 +34,7 @@ class Google extends AbstractSource
             return 1;
         }
 
-        $zero = rand(1, 5);
-        $value = pow(10, $zero);
+        $value = \pow(10, AbstractSource::SCALE);
 
         $rate = null;
         $url  = strtr(static::SOURCE_LINK, [
@@ -53,7 +52,7 @@ class Google extends AbstractSource
             $response = $this->request($url);
 
             $matches = [];
-            preg_match_all('/value="([0-9|,|.]+)"[^<]+type="number"/mi', $response, $matches);
+            \preg_match_all('/value="([0-9|,|.]+)"[^<]+type="number"/mi', $response, $matches);
 
             $rates = new Rates($matches, $value);
             $rate  = $rates->getRates($currencyFrom, $currencyTo);
@@ -61,12 +60,10 @@ class Google extends AbstractSource
             if (empty($rate)) {
                 throw new \Exception();
             }
-
-            $rate = (double)$rate;
         } catch (\Exception $e) {
             $this->_messages[] = __("We can't retrieve a rate from %1.", $url);
         }
 
-        return $rate;
+        return (double)$rate;
     }
 }

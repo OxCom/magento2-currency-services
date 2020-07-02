@@ -41,11 +41,10 @@ class Ecb extends AbstractSource
             $response = $this->request($url);
 
             // Default rates are EUR to some currency
-            $xml = simplexml_load_string($response);
+            $xml = \simplexml_load_string($response);
             $list = [];
 
             foreach ($xml->Cube->Cube->Cube as $row) {
-                /** @var \SimpleXMLElement $row */
                 $currency = (string)$row['currency'];
 
                 $list[$currency] = (string)$row['rate'];
@@ -56,17 +55,11 @@ class Ecb extends AbstractSource
             }
 
             $rates = new Rates(['rates' => $list]);
-            $rate = $rates->getRates($currencyFrom, $currencyTo);
-
-            if (empty($list)) {
-                throw new \Exception();
-            }
-
-            $rate = (double)$rate;
+            $rate  = $rates->getRates($currencyFrom, $currencyTo);
         } catch (\Exception $e) {
             $this->_messages[] = __("We can't retrieve a rate from %1.", $url);
         }
 
-        return $rate;
+        return (double)$rate;
     }
 }

@@ -35,10 +35,10 @@ abstract class AbstractTestCase extends \PHPUnit\Framework\TestCase
         // every week switch to real or mocked response to avoid loose of source
         $date           = new \DateTime();
         $week           = $date->format("W");
-        static::$isReal = $week % 2 == 0;
+        static::$isReal = $week % 2 === 0;
 
         if (static::$isReal) {
-            fwrite(STDOUT, "!!! Test will be executed on real sources !!!" . PHP_EOL . PHP_EOL);
+            \fwrite(STDOUT, "!!! Test will be executed on real sources !!!" . PHP_EOL . PHP_EOL);
         }
     }
 

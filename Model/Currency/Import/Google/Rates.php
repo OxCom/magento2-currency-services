@@ -3,6 +3,7 @@
 namespace OxCom\MagentoCurrencyServices\Model\Currency\Import\Google;
 
 use OxCom\MagentoCurrencyServices\Model\Currency\Import\AbstractDto;
+use OxCom\MagentoCurrencyServices\Model\Currency\Import\AbstractSource;
 
 /**
  * Class Rates
@@ -30,9 +31,8 @@ class Rates extends AbstractDto
         $match = $this->val($object, 1, []);
         $rate  = $this->val($match, 1, 0);
 
-        $rate       = str_replace(',', '.', $rate);
-        $rate       = (double)($rate);
-        $this->rate = $rate / ($value < 0 ? 1 : $value);
+        $rate       = \str_replace(',', '.', $rate);
+        $this->rate = \bcdiv($rate, ($value < 0 ? 1 : $value), AbstractSource::SCALE);
     }
 
     /**

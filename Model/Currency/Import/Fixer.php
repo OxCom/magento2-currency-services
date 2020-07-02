@@ -36,7 +36,7 @@ class Fixer extends AbstractSource
         }
 
         $rate = null;
-        $url  = strtr(static::SOURCE_LINK, [
+        $url  = \strtr(static::SOURCE_LINK, [
             '{{TOKEN}}' => $this->getAccessToken(),
             '{{FROM}}'  => $currencyFrom,
             '{{TO}}'    => $currencyTo,
@@ -47,7 +47,7 @@ class Fixer extends AbstractSource
             // 1. Request as paid token
             // 2. Request as free token
             $response = $this->request($url);
-            $data     = json_decode($response);
+            $data     = @\json_decode($response);
             $rates    = new Rates($data);
 
             if (!empty($data) && empty($data->success)) {
@@ -57,51 +57,49 @@ class Fixer extends AbstractSource
                 ]);
 
                 $response = $this->request($url);
-                $data     = json_decode($response);
+                $data     = @\json_decode($response);
                 $rates    = new Rates($data);
-
-                switch (true) {
-                    case ($currencyFrom === $rates->getBase()):
-                        // this is general case
-                        $rate = $rates->getRates($currencyTo);
-                        break;
-
-                    case ($currencyTo === $rates->getBase()):
-                        $rate = $rates->getRates($currencyFrom);
-
-                        if (empty($rate)) {
-                            throw new \Exception();
-                        }
-
-                        $rate = 1 / $rate;
-                        break;
-
-                    default:
-                        // small trick: we can convert from {FROM} to {TO} with intermediate currency
-                        // 1 EUR = a * 1 {FROM} and 1 EUR = b * 1 {TO}
-                        // so 1 {FROM} = b * 1 {TO} / a
-                        $baseFromRate = $rates->getRates($currencyFrom);
-                        $baseToRate   = $rates->getRates($currencyTo);
-
-                        if (empty($baseFromRate) || $baseToRate) {
-                            throw new \Exception();
-                        }
-
-                        $rate = ($baseToRate / $baseFromRate);
-                }
             } else {
                 $rate = $rates->getRates($currencyTo);
+            }
+
+            switch (true) {
+                case ($currencyFrom === $rates->getBase()):
+                    // this is general case
+                    $rate = $rates->getRates($currencyTo);
+                    break;
+
+                case ($currencyTo === $rates->getBase()):
+                    $rate = $rates->getRates($currencyFrom);
+
+                    if (empty($rate)) {
+                        throw new \Exception();
+                    }
+
+                    $rate = \bcdiv(1, $rate, AbstractSource::SCALE);
+                    break;
+
+                default:
+                    // small trick: we can convert from {FROM} to {TO} with intermediate currency
+                    // 1 EUR = a * 1 {FROM} and 1 EUR = b * 1 {TO}
+                    // so 1 {FROM} = b * 1 {TO} / a
+                    $baseFromRate = $rates->getRates($currencyFrom);
+                    $baseToRate   = $rates->getRates($currencyTo);
+
+                    if (empty($baseFromRate) || $baseToRate) {
+                        throw new \Exception();
+                    }
+
+                    $rate = \bcdiv($baseToRate, $baseFromRate, AbstractSource::SCALE);
             }
 
             if (empty($rate)) {
                 throw new \Exception();
             }
-
-            $rate = (double)$rate;
         } catch (\Exception $e) {
             $this->_messages[] = __("We can't retrieve a rate from %1.", $url);
         }
 
-        return $rate;
+        return (double)$rate;
     }
 }

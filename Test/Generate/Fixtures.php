@@ -27,7 +27,7 @@ class Fixtures
                 break;
 
             case Fixer::class:
-                $rsp = '{"base":"USD","date":"2018-02-13","rates":{"EUR":0.806942}}';
+                $rsp = \file_get_contents(__DIR__. '/Fixture/fixer.json');
                 break;
 
             case Google::class:
