@@ -20,15 +20,20 @@ matrix:
         -   php: 7.3
             env: MAGENTO_VERSION=^102.0
 
+        -   php: 7.3
+            env: MAGENTO_VERSION=^103.0
+        -   php: 7.4
+            env: MAGENTO_VERSION=^103.0
+
 install:
     - composer config http-basic.repo.magento.com ${MAGENTO_USERNAME} ${MAGENTO_PASSWORD}
     - composer require magento/framework:${MAGENTO_VERSION} --no-update
     - composer install --prefer-dist
 
 script:
-    - php vendor/bin/phpcs --standard=PSR2 Model/
-    - php vendor/bin/phpcpd Model/
-    - php vendor/bin/phpunit -c Test/phpunit.xml
+    - php ./vendor/bin/phpcs --standard=PSR2 Model/
+    - php ./vendor/bin/phpcpd Model/
+    - php -dxdebug.mode=coverage ./vendor/bin/phpunit -c Test/phpunit.xml
 
 env:
     global:
