@@ -3,13 +3,6 @@ sudo: false
 
 matrix:
     include:
-        -   php: 5.6
-            env: MAGENTO_VERSION=^100.0
-        -   php: 5.6
-            env: MAGENTO_VERSION=^100.1
-
-        -   php: 7.0
-            env: MAGENTO_VERSION=^101.0
         -   php: 7.1
             env: MAGENTO_VERSION=^101.0
 
