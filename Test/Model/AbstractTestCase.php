@@ -2,6 +2,8 @@
 
 namespace OxCom\MagentoCurrencyServices\Test\Model;
 
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+
 /**
  * Class AbstractTestCase
  *
@@ -30,7 +32,11 @@ abstract class AbstractTestCase extends \PHPUnit\Framework\TestCase
         parent::__construct($name, $data, $dataName);
     }
 
-    public static function setUpBeforeClass()
+    /**
+     * Sets up the fixture, for example, open a network connection.
+     * This method is called before a test is executed.
+     */
+    protected function setUp()
     {
         // every week switch to real or mocked response to avoid loose of source
         $date           = new \DateTime();
@@ -40,15 +46,8 @@ abstract class AbstractTestCase extends \PHPUnit\Framework\TestCase
         if (static::$isReal) {
             \fwrite(STDOUT, "!!! Test will be executed on real sources !!!" . PHP_EOL . PHP_EOL);
         }
-    }
 
-    /**
-     * Sets up the fixture, for example, open a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
-    {
-        $this->om = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->om = new ObjectManager($this);
     }
 
     /**
