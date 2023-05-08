@@ -1,22 +1,38 @@
 language: php
-sudo: false
+os: linux
 
-matrix:
+jobs:
     include:
         -   php: 7.1
             env: MAGENTO_VERSION=^101.0
+            dist: xenial
 
         -   php: 7.1
             env: MAGENTO_VERSION=^102.0
+            dist: xenial
         -   php: 7.2
             env: MAGENTO_VERSION=^102.0
+            dist: xenial
         -   php: 7.3
             env: MAGENTO_VERSION=^102.0
+            dist: xenial
 
         -   php: 7.3
             env: MAGENTO_VERSION=^103.0
+            dist: xenial
         -   php: 7.4
             env: MAGENTO_VERSION=^103.0
+            dist: focal
+        -   php: 8.1
+            env: MAGENTO_VERSION=^103.0
+            dist: jammy
+        -   php: 8.2
+            env: MAGENTO_VERSION=^103.0
+            dist: jammy
+            addons:
+                apt:
+                    packages:
+                        - libonig5
 
 install:
     - composer config http-basic.repo.magento.com ${MAGENTO_USERNAME} ${MAGENTO_PASSWORD}
@@ -31,6 +47,6 @@ script:
 env:
     global:
         - XDEBUG_MODE=coverage
-        - secure: "Ak15yJnLY0eyU76ornC+YKM1JZ8NI3gk6yJirnBKKiEV9euoJIIe1RHywpExJR7FHAYcLEHSTpXmDcRDoj70BQC8u2+wSbrN8UXeP3lSOcv+PtdPmo5HDiNDQuoUJoISCXDAYjMLCt/kG1mt46QuOC71MM5WzFsgRij61/uPF9P21iWV3ZEavfKO2gpsaPLljX6hMx5bZ3t+9w8KD7FGEf5NHhs0BKlSwvTqh0t0KCmnlXMngewOzIYnlEOicBSN4BwE4NIUaW6wIkWJ9CN2dYDQON0gB5cnhqVyE2LxHcdBIO3ZjuTAMZI+AUcaUE5BpTJpJEfqKHgHYTMIc60OSDz83+oLcWw7f/S70YL0QcnpkLHbh9Px2hlYyLsQFk/ZXBh5HrP0zzMp61fd8D/L2Xfe1owGwfHmbxTd1gjpzl51W7mkrr4srnY7jyF39pwLw6BGfjYnpFCr7z5WYPBtvwJTW+fEnA543/YkIrwd3vSFvMtyIOBdi/x1VS9AqHEd2FvqoVKOiqjDP6t2/lIpUBfurV9GBNUdyCieJR8grEHuEId4rx1TpOXvJZtsQPrBKf2c9l2iaRK6KZs5Kf31RV3ULRWdx7LVSWmQPhQ9sXuTbov2FBcwRGeHN6x2WGkCRMWKou28RpNEmsXhU4Xz0QXV1lHz60bhq7XxCStmsuw="
-        - secure: "lSAHd51B4ygTXFsthMD99Ih2Vli1+XQM9zn+j8n4VnxrVWnIvoKhbCoIaR4TMvdv3Fn3gwbI5wzd0rcXN03yAqVeR5boMGb8vV7yz3P2jEpqXRMLsI8ssC3vrGV7hncC2XFl+hyYKQiMlVnbU7HjXMWpr47ScvkUjdU28/K5mV+EtlHI3gGn2OTAoO6qjbvDHijmnFB+ymn6yUPD5+d2x6X+uVDE1KJ8Wtq9MadrJ/1BXDEA0E+p+hloA2ABNk3/Wy0TomcC+jJcjArxalOEaAG2JsfAzld10dyzy3kirt5OfL1lnHe7j85nnGQbfugMGJyIkWRepLErCOnk3HaRcQEdpjS1+C/SF0FuA91ewUE0kr8/VLXpNXRI+7naBv2fkby+WunojmJ2BdvP8lxh67q0BOI/7eltEjXKx2RzDl2YzcUN1XtdNAtgW1/HSqShxJ48VivLOW4RfyZe3o4VYGJWsZpK0PiVeQara0rR0Tf5bQKesU7Fqm8UpUK1awF8X3WJ5pINu8LhBGPomttl0k1nIywfGOPkaHCJBayMSmEDeBdv56+fa4LszJnLPbt7V6KtpYc/QL5J/zVIcVPTqVoaLqnRevsOchNZoNxjeOAyzk4mZjNqkvGtQtkfTqXQpyXEyool0YOfSkQitr0/morOON+nl+U3BRSFYm8pGlI="
-        - secure: "t2N6T3dNZuHJJQo91eHTjxpLjWxU8QAG7OaASv4L63ZjSk6Uz2t6Ek+fOR6jb4eFKrp7YC4sGBZlM1ls39aPnhkU3/hQ/a/THLLRURxibrUvJoHl4eqgZRx9qcaXL+iwsqRtJjcnVc4Yk4onL4LYEB7yb/5r/TAqz56cyQ5+3Ee6MQFoO4EE/wOSUaezi4btwn7Fw64NuNK7UW0+wrFfp2HhcCRpaeWjJSD/fdz9ihph74ZvaXe9jnzmGfh1CltLoisoSP5fmAYrd2M9NfFG+5nFkZ+bsagkZQFAPvQ8cFaZ0OITgRzTxgISPFzSB9HavZEAoVydnHC9Aj+LK9fmJA+UeR5p7VScrkqKx+t37ASxe2WoTP6ip9x2oSLXr7p6vfjf/CSS2OuJF2NHt9uewC1XWh8IjeHgLMjXEWDjBnGrxOaI78XpowZI/+kSu6pJlpXHfFv8C7zvfTR2FQqA5nMMQAgwq6grPx0Glox8ZVBJaGy02HH1ZWTo/7nJVpg2AZKCnAM4g4bpVvbVLrWcRisNzpbSGH/XPQSxsMIU33hARmUk/C3iXBPgQD0Vemxz45vhSDE04VTfFVgI6vybPrkVa++7JmG0OcZuh7uiCLs2o/AHEhPOlhCAZ1jldsY0qLVHbgNd8hKHBMB+JPW+rfxEETYwDYaYR5nfmXzkePg="
+        -   secure: "Ak15yJnLY0eyU76ornC+YKM1JZ8NI3gk6yJirnBKKiEV9euoJIIe1RHywpExJR7FHAYcLEHSTpXmDcRDoj70BQC8u2+wSbrN8UXeP3lSOcv+PtdPmo5HDiNDQuoUJoISCXDAYjMLCt/kG1mt46QuOC71MM5WzFsgRij61/uPF9P21iWV3ZEavfKO2gpsaPLljX6hMx5bZ3t+9w8KD7FGEf5NHhs0BKlSwvTqh0t0KCmnlXMngewOzIYnlEOicBSN4BwE4NIUaW6wIkWJ9CN2dYDQON0gB5cnhqVyE2LxHcdBIO3ZjuTAMZI+AUcaUE5BpTJpJEfqKHgHYTMIc60OSDz83+oLcWw7f/S70YL0QcnpkLHbh9Px2hlYyLsQFk/ZXBh5HrP0zzMp61fd8D/L2Xfe1owGwfHmbxTd1gjpzl51W7mkrr4srnY7jyF39pwLw6BGfjYnpFCr7z5WYPBtvwJTW+fEnA543/YkIrwd3vSFvMtyIOBdi/x1VS9AqHEd2FvqoVKOiqjDP6t2/lIpUBfurV9GBNUdyCieJR8grEHuEId4rx1TpOXvJZtsQPrBKf2c9l2iaRK6KZs5Kf31RV3ULRWdx7LVSWmQPhQ9sXuTbov2FBcwRGeHN6x2WGkCRMWKou28RpNEmsXhU4Xz0QXV1lHz60bhq7XxCStmsuw="
+        -   secure: "lSAHd51B4ygTXFsthMD99Ih2Vli1+XQM9zn+j8n4VnxrVWnIvoKhbCoIaR4TMvdv3Fn3gwbI5wzd0rcXN03yAqVeR5boMGb8vV7yz3P2jEpqXRMLsI8ssC3vrGV7hncC2XFl+hyYKQiMlVnbU7HjXMWpr47ScvkUjdU28/K5mV+EtlHI3gGn2OTAoO6qjbvDHijmnFB+ymn6yUPD5+d2x6X+uVDE1KJ8Wtq9MadrJ/1BXDEA0E+p+hloA2ABNk3/Wy0TomcC+jJcjArxalOEaAG2JsfAzld10dyzy3kirt5OfL1lnHe7j85nnGQbfugMGJyIkWRepLErCOnk3HaRcQEdpjS1+C/SF0FuA91ewUE0kr8/VLXpNXRI+7naBv2fkby+WunojmJ2BdvP8lxh67q0BOI/7eltEjXKx2RzDl2YzcUN1XtdNAtgW1/HSqShxJ48VivLOW4RfyZe3o4VYGJWsZpK0PiVeQara0rR0Tf5bQKesU7Fqm8UpUK1awF8X3WJ5pINu8LhBGPomttl0k1nIywfGOPkaHCJBayMSmEDeBdv56+fa4LszJnLPbt7V6KtpYc/QL5J/zVIcVPTqVoaLqnRevsOchNZoNxjeOAyzk4mZjNqkvGtQtkfTqXQpyXEyool0YOfSkQitr0/morOON+nl+U3BRSFYm8pGlI="
+        -   secure: "t2N6T3dNZuHJJQo91eHTjxpLjWxU8QAG7OaASv4L63ZjSk6Uz2t6Ek+fOR6jb4eFKrp7YC4sGBZlM1ls39aPnhkU3/hQ/a/THLLRURxibrUvJoHl4eqgZRx9qcaXL+iwsqRtJjcnVc4Yk4onL4LYEB7yb/5r/TAqz56cyQ5+3Ee6MQFoO4EE/wOSUaezi4btwn7Fw64NuNK7UW0+wrFfp2HhcCRpaeWjJSD/fdz9ihph74ZvaXe9jnzmGfh1CltLoisoSP5fmAYrd2M9NfFG+5nFkZ+bsagkZQFAPvQ8cFaZ0OITgRzTxgISPFzSB9HavZEAoVydnHC9Aj+LK9fmJA+UeR5p7VScrkqKx+t37ASxe2WoTP6ip9x2oSLXr7p6vfjf/CSS2OuJF2NHt9uewC1XWh8IjeHgLMjXEWDjBnGrxOaI78XpowZI/+kSu6pJlpXHfFv8C7zvfTR2FQqA5nMMQAgwq6grPx0Glox8ZVBJaGy02HH1ZWTo/7nJVpg2AZKCnAM4g4bpVvbVLrWcRisNzpbSGH/XPQSxsMIU33hARmUk/C3iXBPgQD0Vemxz45vhSDE04VTfFVgI6vybPrkVa++7JmG0OcZuh7uiCLs2o/AHEhPOlhCAZ1jldsY0qLVHbgNd8hKHBMB+JPW+rfxEETYwDYaYR5nfmXzkePg="

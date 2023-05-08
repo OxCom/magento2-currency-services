@@ -46,9 +46,9 @@ class Fixer extends AbstractSource
             // We are not able to detect typ of token (free, paid), so we have to do 2 API calls:
             // 1. Request as paid token
             // 2. Request as free token
-            $response = $this->request($url);
-            $data     = @\json_decode($response);
-            $rates    = new Rates($data);
+            $payload = $this->request($url);
+            $data    = $this->processPayload($payload);
+            $rates   = new Rates($data);
 
             if (!empty($data) && empty($data->success)) {
                 // example: {"success":false,"error":{"code":105,"type":"base_currency_access_restricted"}}
@@ -56,9 +56,9 @@ class Fixer extends AbstractSource
                     '{{TOKEN}}' => $this->getAccessToken(),
                 ]);
 
-                $response = $this->request($url);
-                $data     = @\json_decode($response);
-                $rates    = new Rates($data);
+                $payload = $this->request($url);
+                $data    = $this->processPayload($payload);
+                $rates   = new Rates($data);
             } else {
                 $rate = $rates->getRates($currencyTo);
             }

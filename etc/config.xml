@@ -3,16 +3,16 @@
     <default>
         <currency>
             <ecb>
-                <timeout>100</timeout>
+                <timeout>3</timeout>
                 <delay>1</delay>
             </ecb>
             <fixer>
-                <timeout>100</timeout>
+                <timeout>3</timeout>
                 <delay>1</delay>
                 <token>1</token>
             </fixer>
             <google>
-                <timeout>100</timeout>
+                <timeout>3</timeout>
                 <delay>1</delay>
             </google>
         </currency>

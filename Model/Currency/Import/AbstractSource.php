@@ -5,6 +5,8 @@ namespace OxCom\MagentoCurrencyServices\Model\Currency\Import;
 use Magento\Directory\Model\Currency\Import\AbstractImport;
 use Magento\Directory\Model\CurrencyFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class AbstractSource
@@ -19,32 +21,33 @@ abstract class AbstractSource extends AbstractImport
     const SOURCE_LINK = '';
 
     const DEFAULT_DELAY   = 1;
-    const DEFAULT_TIMEOUT = 100;
+    const DEFAULT_TIMEOUT = 3;
     const DEFAULT_TOKEN   = '';
 
     /**
-     * @codingStandardsIgnoreStart
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var ScopeConfigInterface
      */
-    protected $_scopeConfig;
+    protected $config;
 
     /**
-     * @var \Magento\Framework\HTTP\ZendClient
+     * @var LoggerInterface
      */
-    protected $_httpClient;
+    private $logger;
 
     /**
-     * @codingStandardsIgnoreStop
-     *
-     * @param \Magento\Directory\Model\CurrencyFactory           $currencyFactory
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param CurrencyFactory $currencyFactory
+     * @param ScopeConfigInterface $scopeConfig
+     * @param LoggerInterface $logger
      */
-    public function __construct(CurrencyFactory $currencyFactory, ScopeConfigInterface $scopeConfig)
-    {
+    public function __construct(
+        CurrencyFactory $currencyFactory,
+        ScopeConfigInterface $scopeConfig,
+        LoggerInterface $logger
+    ) {
         parent::__construct($currencyFactory);
 
-        $this->_scopeConfig = $scopeConfig;
-        $this->_httpClient  = new \Magento\Framework\HTTP\ZendClient();
+        $this->config = $scopeConfig;
+        $this->logger = $logger;
     }
 
     /**
@@ -58,12 +61,14 @@ abstract class AbstractSource extends AbstractImport
             return;
         }
 
-        $value = (int)$this->_scopeConfig->getValue(
+        $value = (int)$this->config->getValue(
             'currency/' . $source . '/delay',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            ScopeInterface::SCOPE_STORE
         );
 
         $value = empty($value) ? static::DEFAULT_DELAY : (int)$value;
+
+        $this->logger->debug('Trigger request delay', ['delay' => $value]);
         sleep($value);
     }
 
@@ -79,9 +84,9 @@ abstract class AbstractSource extends AbstractImport
             return static::DEFAULT_TIMEOUT;
         }
 
-        $value = (int)$this->_scopeConfig->getValue(
+        $value = (int)$this->config->getValue(
             'currency/' . $source . '/timeout',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            ScopeInterface::SCOPE_STORE
         );
 
         $value = empty($value) ? static::DEFAULT_TIMEOUT : $value;
@@ -101,9 +106,9 @@ abstract class AbstractSource extends AbstractImport
             return static::DEFAULT_TOKEN;
         }
 
-        $value = (int)$this->_scopeConfig->getValue(
+        $value = (int)$this->config->getValue(
             'currency/' . $source . '/token',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            ScopeInterface::SCOPE_STORE
         );
 
         $value = empty($value) ? static::DEFAULT_TOKEN : $value;
@@ -115,19 +120,53 @@ abstract class AbstractSource extends AbstractImport
      * @param string $url
      *
      * @return string
-     * @throws \Zend_Http_Client_Exception
      */
     protected function request($url)
     {
-        $agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
-            . 'Chrome/64.0.3282.186 Safari/537.36';
+        $ch = \curl_init();
 
-        return $this->_httpClient
-            ->setUri($url)
-            ->setHeaders('User-Agent', $agent)
-            ->setConfig([
-                'timeout' => $this->getRequestTimeout(),
-            ])->request('GET')
-            ->getBody();
+        \curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_HEADER => 0,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_FOLLOWLOCATION => 1,
+            CURLOPT_MAXREDIRS => 7,
+            CURLOPT_CONNECTTIMEOUT => $this->getRequestTimeout(),
+            CURLOPT_TIMEOUT => $this->getRequestTimeout() * 2,
+            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
+                . 'Chrome/64.0.3282.186 Safari/537.36'
+        ]);
+
+        $payload = \curl_exec($ch);
+
+        if ($payload === false) {
+            $this->logger->error('Unable to request currency rates.', [
+                'url' => $url,
+                'error' => \curl_error($ch),
+            ]);
+
+            return '';
+        }
+
+        \curl_close($ch);
+
+        return $payload;
+    }
+
+    protected function processPayload(string $content, $default = null)
+    {
+        try {
+            $flags = defined('JSON_THROW_ON_ERROR') ? JSON_THROW_ON_ERROR : 0;
+            $payload = \json_decode($content, true, 512, $flags);
+        } catch (\Throwable $e) {
+            $this->logger->debug(__METHOD__ . ': Unable to decode content.', [
+                'content' => $content,
+                'exception' => $e,
+            ]);
+
+            $payload = $default;
+        }
+
+        return $payload;
     }
 }

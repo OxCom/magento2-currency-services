@@ -1,5 +1,6 @@
 # Magento2 Currency Services
-[![Build Status](https://travis-ci.org/OxCom/magento2-currency-services.svg?branch=master)](https://travis-ci.org/OxCom/magento2-currency-services)
+
+[![Build Status](https://app.travis-ci.com/OxCom/magento2-currency-services.svg?branch=master)](https://app.travis-ci.com/OxCom/magento2-currency-services)
 
 This is a module that allows to update currency rates from addition external sources.
 
