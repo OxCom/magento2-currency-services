@@ -29,6 +29,10 @@ jobs:
         -   php: 8.2
             env: MAGENTO_VERSION=^103.0
             dist: jammy
+            addons:
+                apt:
+                    packages:
+                        - libonig5
 
 install:
     - composer config http-basic.repo.magento.com ${MAGENTO_USERNAME} ${MAGENTO_PASSWORD}
