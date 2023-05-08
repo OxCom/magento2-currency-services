@@ -153,7 +153,7 @@ abstract class AbstractSource extends AbstractImport
         return $payload;
     }
 
-    protected function processPayload(string $content, mixed $default = null): mixed
+    protected function processPayload(string $content, $default = null)
     {
         try {
             $flags = defined('JSON_THROW_ON_ERROR') ? JSON_THROW_ON_ERROR : 0;
