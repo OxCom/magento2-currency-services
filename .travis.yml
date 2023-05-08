@@ -1,11 +1,6 @@
 language: php
 os: linux
-dist: focal
-
-addons:
-    apt:
-        packages:
-            - libonig5
+dist: jammy
 
 jobs:
     include:
