@@ -30,12 +30,20 @@ abstract class AbstractSource extends AbstractImport
     protected $config;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @param CurrencyFactory $currencyFactory
      * @param ScopeConfigInterface $scopeConfig
      * @param LoggerInterface $logger
      */
-    public function __construct(CurrencyFactory $currencyFactory, ScopeConfigInterface $scopeConfig, LoggerInterface $logger)
-    {
+    public function __construct(
+        CurrencyFactory $currencyFactory,
+        ScopeConfigInterface $scopeConfig,
+        LoggerInterface $logger
+    ) {
         parent::__construct($currencyFactory);
 
         $this->config = $scopeConfig;
