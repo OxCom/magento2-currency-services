@@ -13,6 +13,7 @@ jobs:
   phpcs:
     name: PHP_CodeSniffer
     runs-on: ubuntu-latest
+    needs: [gitleaks, trufflehog, composer-audit]
     steps:
       - uses: actions/checkout@v7
 
@@ -46,6 +47,7 @@ jobs:
   phpstan:
     name: PHPStan
     runs-on: ubuntu-latest
+    needs: [gitleaks, trufflehog, composer-audit]
     steps:
       - uses: actions/checkout@v7
 
