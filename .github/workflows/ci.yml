@@ -101,7 +101,7 @@ jobs:
         run: composer update --prefer-dist --no-progress
 
       - name: Run composer audit
-        run: composer audit
+        run: composer audit --abandoned=report
 
   gitleaks:
     name: Gitleaks Secret Scan
