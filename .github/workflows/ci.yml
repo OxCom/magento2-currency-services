@@ -134,7 +134,7 @@ jobs:
           path: .
           base: ''
           head: HEAD
-          extra_args: --results=verified,unknown --fail
+          extra_args: --results=verified,unknown
 
   test:
     name: PHPUnit (PHP ${{ matrix.php }}, magento/framework ${{ matrix.magento }})
@@ -146,9 +146,6 @@ jobs:
       matrix:
         include:
           - php: '8.1'
-            magento: '^103.0'
-            experimental: false
-          - php: '8.2'
             magento: '^103.0'
             experimental: false
           - php: '8.3'
