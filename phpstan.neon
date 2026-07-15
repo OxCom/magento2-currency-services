@@ -1,0 +1,16 @@
+parameters:
+    level: 1
+
+    paths:
+        - Model
+        - Test
+    excludePaths:
+        - Test/Generate/Fixture
+        - vendor
+
+    parallel:
+        jobSize: 32
+        maximumNumberOfProcesses: 64
+        minimumNumberOfJobsPerProcess: 4
+
+    treatPhpDocTypesAsCertain: false

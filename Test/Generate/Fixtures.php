@@ -23,11 +23,11 @@ class Fixtures
         $rsp = '';
         switch ($source) {
             case Ecb::class:
-                $rsp = \file_get_contents(__DIR__. '/Fixture/ecb.xml');
+                $rsp = \file_get_contents(__DIR__ . '/Fixture/ecb.xml');
                 break;
 
             case Fixer::class:
-                $rsp = \file_get_contents(__DIR__. '/Fixture/fixer.json');
+                $rsp = \file_get_contents(__DIR__ . '/Fixture/fixer.json');
                 break;
 
             case Google::class:

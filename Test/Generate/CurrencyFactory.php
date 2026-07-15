@@ -15,14 +15,14 @@ class CurrencyFactory
      *
      * @var \Magento\Framework\ObjectManagerInterface
      */
-    protected $_objectManager = null;
+    protected $objectManager = null;
 
     /**
      * Instance name to create
      *
      * @var string
      */
-    protected $_instanceName = null;
+    protected $instanceName = null;
 
     /**
      * Factory constructor
@@ -34,8 +34,8 @@ class CurrencyFactory
         ObjectManagerInterface $objectManager,
         $instanceName = '\\Magento\\Directory\\Model\\Currency'
     ) {
-        $this->_objectManager = $objectManager;
-        $this->_instanceName  = $instanceName;
+        $this->objectManager = $objectManager;
+        $this->instanceName  = $instanceName;
     }
 
     /**
@@ -47,6 +47,6 @@ class CurrencyFactory
      */
     public function create(array $data = [])
     {
-        return $this->_objectManager->create($this->_instanceName, $data);
+        return $this->objectManager->create($this->instanceName, $data);
     }
 }

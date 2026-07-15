@@ -108,6 +108,6 @@ class Rates extends AbstractDto
                     : \bcdiv($rateTo, $rateFrom, AbstractSource::SCALE);
         }
 
-        return (double)$rate;
+        return (float)$rate;
     }
 }

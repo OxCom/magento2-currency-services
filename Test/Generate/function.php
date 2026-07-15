@@ -6,6 +6,7 @@
  *
  * @return \Magento\Framework\Phrase
  */
+
 if (!function_exists('__')) {
     function __()
     {
@@ -19,4 +20,3 @@ if (!function_exists('__')) {
         return new \Magento\Framework\Phrase($text, $argc);
     }
 }
-

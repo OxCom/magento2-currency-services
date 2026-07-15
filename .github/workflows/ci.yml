@@ -1,0 +1,133 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  phpcs:
+    name: PHP_CodeSniffer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: bcmath, simplexml, curl
+          coverage: none
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache composer packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-8.4-${{ hashFiles('composer.json') }}
+          restore-keys: composer-8.4-
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-progress
+
+      - name: Run phpcs
+        run: vendor/bin/phpcs
+
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: bcmath, simplexml, curl
+          coverage: none
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache composer packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-8.4-${{ hashFiles('composer.json') }}
+          restore-keys: composer-8.4-
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-progress
+
+      - name: Run phpstan
+        run: vendor/bin/phpstan analyse -c phpstan.neon --no-progress
+
+  test:
+    name: PHPUnit (PHP ${{ matrix.php }}, magento/framework ${{ matrix.magento }})
+    runs-on: ubuntu-latest
+    needs: [phpcs, phpstan]
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: '8.1'
+            magento: '^103.0'
+            experimental: false
+          - php: '8.2'
+            magento: '^103.0'
+            experimental: false
+          - php: '8.3'
+            magento: '^103.0'
+            experimental: false
+          - php: '8.4'
+            magento: '^103.0'
+            experimental: false
+          - php: '8.5'
+            magento: '^103.0'
+            experimental: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: bcmath, simplexml, curl
+          coverage: none
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache composer packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ matrix.php }}-${{ matrix.magento }}-${{ hashFiles('composer.json') }}
+          restore-keys: composer-${{ matrix.php }}-${{ matrix.magento }}-
+
+      - name: Pin magento/framework
+        run: composer require "magento/framework:${{ matrix.magento }}" --no-update
+
+      - name: Install dependencies
+        if: ${{ !matrix.experimental }}
+        run: composer update --prefer-dist --no-progress
+
+      - name: Install dependencies (experimental PHP)
+        if: ${{ matrix.experimental }}
+        run: composer update --prefer-dist --no-progress --ignore-platform-req=php+
+
+      - name: Run phpunit
+        run: vendor/bin/phpunit -c Test/phpunit.xml --no-coverage

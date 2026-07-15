@@ -1,6 +1,6 @@
 # Magento2 Currency Services
 
-[![Build Status](https://app.travis-ci.com/OxCom/magento2-currency-services.svg?branch=master)](https://app.travis-ci.com/OxCom/magento2-currency-services)
+[![CI](https://github.com/OxCom/magento2-currency-services/actions/workflows/ci.yml/badge.svg)](https://github.com/OxCom/magento2-currency-services/actions/workflows/ci.yml)
 
 This is a module that allows to update currency rates from addition external sources.
 
@@ -53,11 +53,19 @@ $ bin/magento setup:di:compile
 ```
 
 ## Tests
-Test will be performed on real sources, so internet connection is required.
+By default, local test runs alternate weekly between real sources (internet
+connection required) and local fixtures. Setting the `CI` environment variable
+forces fixture (mocked) mode — no network access needed:
 
 ```bash
 $ composer install
-$ vendor/bin/phpunit -c Test/phpunit.xml
+$ CI=1 vendor/bin/phpunit -c Test/phpunit.xml --no-coverage
 ```
 
-Some info how to run tests in [Travis + Magento Module](https://gordonlesti.com/magento2-extension-development-with-travis-ci/)
+Composer scripts are available for all checks:
+
+```bash
+$ composer cs    # phpcs (PSR-12 + Slevomat)
+$ composer stan  # phpstan analyse
+$ composer test  # phpunit (no coverage)
+```

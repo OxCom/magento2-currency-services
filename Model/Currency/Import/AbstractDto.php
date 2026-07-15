@@ -9,7 +9,7 @@ namespace OxCom\MagentoCurrencyServices\Model\Currency\Import;
  */
 abstract class AbstractDto
 {
-    const DATE_FORMAT = 'Y-m-d';
+    public const DATE_FORMAT = 'Y-m-d';
 
     /**
      * @var object|array
@@ -45,9 +45,9 @@ abstract class AbstractDto
      */
     protected function val($object, $key, $default = null)
     {
-        if (is_object($object) && property_exists($object, $key) && !empty($object->{$key})) {
+        if (\is_object($object) && \property_exists($object, $key) && !empty($object->{$key})) {
             return $object->{$key};
-        } elseif (is_array($object) && !empty($object[$key])) {
+        } elseif (\is_array($object) && !empty($object[$key])) {
             return $object[$key];
         }
 

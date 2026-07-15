@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+
+    <arg name="basepath" value="."/>
+    <arg name="cache" value=".phpcs-cache"/>
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+    <arg name="encoding" value="utf8" />
+
+    <rule ref="PSR12" />
+
+    <rule ref="SlevomatCodingStandard.PHP.OptimizedFunctionsWithoutUnpacking"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedGlobalFunctions"/>
+
+    <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses">
+        <properties>
+            <property name="searchAnnotations" value="true" />
+        </properties>
+    </rule>
+
+    <rule ref="Generic.PHP.ForbiddenFunctions">
+        <properties>
+            <property name="forbiddenFunctions" type="array">
+                <element key="eval" value="null"/>
+                <element key="dd" value="null"/>
+                <element key="sizeof" value="count"/>
+                <element key="delete" value="unset"/>
+                <element key="print" value="echo"/>
+                <element key="dump" value="null"/>
+                <element key="var_dump" value="null"/>
+                <element key="create_function" value="null"/>
+                <element key="system" value="null"/>
+            </property>
+        </properties>
+    </rule>
+
+    <file>Model/</file>
+    <file>Test/</file>
+
+    <exclude-pattern>Test/Generate/Fixture/*</exclude-pattern>
+</ruleset>

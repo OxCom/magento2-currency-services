@@ -11,8 +11,9 @@ use OxCom\MagentoCurrencyServices\Model\Currency\Import\Google\Rates;
  */
 class Google extends AbstractSource
 {
-    const SOURCE_NAME = 'google';
-    const SOURCE_LINK = 'https://www.google.com/search?safe=off&q={{VALUE}}+{{CURRENCY_FROM}}+{{CURRENCY_TO}}&hl=en-EN';
+    public const SOURCE_NAME = 'google';
+    // phpcs:ignore Generic.Files.LineLength.TooLong
+    public const SOURCE_LINK = 'https://www.google.com/search?safe=off&q={{VALUE}}+{{CURRENCY_FROM}}+{{CURRENCY_TO}}&hl=en-EN';
 
     /**
      * Retrieve rate
@@ -64,6 +65,6 @@ class Google extends AbstractSource
             $this->_messages[] = __("We can't retrieve a rate from %1.", $url);
         }
 
-        return (double)$rate;
+        return (float)$rate;
     }
 }

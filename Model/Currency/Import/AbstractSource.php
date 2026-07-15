@@ -15,14 +15,14 @@ use Psr\Log\LoggerInterface;
  */
 abstract class AbstractSource extends AbstractImport
 {
-    const SCALE = 6;
+    public const SCALE = 6;
 
-    const SOURCE_NAME = 'abstract';
-    const SOURCE_LINK = '';
+    public const SOURCE_NAME = 'abstract';
+    public const SOURCE_LINK = '';
 
-    const DEFAULT_DELAY   = 1;
-    const DEFAULT_TIMEOUT = 3;
-    const DEFAULT_TOKEN   = '';
+    public const DEFAULT_DELAY   = 1;
+    public const DEFAULT_TIMEOUT = 3;
+    public const DEFAULT_TOKEN   = '';
 
     /**
      * @var ScopeConfigInterface
@@ -69,7 +69,7 @@ abstract class AbstractSource extends AbstractImport
         $value = empty($value) ? static::DEFAULT_DELAY : (int)$value;
 
         $this->logger->debug('Trigger request delay', ['delay' => $value]);
-        sleep($value);
+        \sleep($value);
     }
 
     /**
@@ -156,7 +156,7 @@ abstract class AbstractSource extends AbstractImport
     protected function processPayload(string $content, $default = null)
     {
         try {
-            $flags = defined('JSON_THROW_ON_ERROR') ? JSON_THROW_ON_ERROR : 0;
+            $flags = \defined('JSON_THROW_ON_ERROR') ? JSON_THROW_ON_ERROR : 0;
             $payload = \json_decode($content, true, 512, $flags);
         } catch (\Throwable $e) {
             $this->logger->debug(__METHOD__ . ': Unable to decode content.', [

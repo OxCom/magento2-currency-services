@@ -1,5 +1,8 @@
 .idea/
+auth.json
 coverage/
 vendor/
 composer.lock
 Test/.phpunit.result.cache
+.phpcs-cache
+.phpunit.cache/
