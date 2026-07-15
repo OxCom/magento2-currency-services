@@ -8,11 +8,13 @@
     <testsuites>
         <testsuite name="CurrencyServices">
             <directory suffix="Test.php">Model</directory>
+            <directory suffix="Test.php">Console</directory>
         </testsuite>
     </testsuites>
     <source>
         <include>
             <directory>../Model</directory>
+            <directory>../Console</directory>
         </include>
     </source>
     <coverage>

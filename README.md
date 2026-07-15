@@ -52,6 +52,24 @@ $ bin/magento setup:upgrade
 $ bin/magento setup:di:compile
 ```
 
+## CLI commands
+Rates can be imported manually per source, without waiting for cron or using
+the admin panel:
+
+```bash
+$ bin/magento oxcom:importrates:ecb
+$ bin/magento oxcom:importrates:fixer
+$ bin/magento oxcom:importrates:google
+```
+
+Each command fetches rates from the given source and saves them, same as
+admin System > Currency Rates > Import Now. Non-zero exit code + error
+output if a rate can't be retrieved.
+
+Commands are registered via DI, so after install run `setup:upgrade` (and
+`setup:di:compile` in production mode) / flush cache before they show up in
+`bin/magento list`.
+
 ## Tests
 By default, local test runs alternate weekly between real sources (internet
 connection required) and local fixtures. Setting the `CI` environment variable

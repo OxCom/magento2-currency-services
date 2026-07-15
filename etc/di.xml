@@ -19,4 +19,20 @@
             </argument>
         </arguments>
     </type>
+
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="oxcom_importrates_ecb" xsi:type="object">
+                    OxCom\MagentoCurrencyServices\Console\Command\ImportRatesEcbCommand
+                </item>
+                <item name="oxcom_importrates_fixer" xsi:type="object">
+                    OxCom\MagentoCurrencyServices\Console\Command\ImportRatesFixerCommand
+                </item>
+                <item name="oxcom_importrates_google" xsi:type="object">
+                    OxCom\MagentoCurrencyServices\Console\Command\ImportRatesGoogleCommand
+                </item>
+            </argument>
+        </arguments>
+    </type>
 </config>

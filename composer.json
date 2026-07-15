@@ -40,7 +40,8 @@
   },
   "autoload-dev": {
     "classmap": [
-      "Test/Model"
+      "Test/Model",
+      "Test/Console"
     ]
   },
   "authors": [
