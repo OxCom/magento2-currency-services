@@ -117,6 +117,35 @@ abstract class AbstractSource extends AbstractImport
     }
 
     /**
+     * Build the cURL option set for a GET request.
+     *
+     * HTTP/1.1 is forced on purpose: www.ecb.europa.eu drops the connection during the TLS/ALPN
+     * handshake when a client offers HTTP/2, which surfaced as "We can't retrieve a rate from ...".
+     *
+     * @param string $url
+     *
+     * @return array
+     */
+    protected function getRequestOptions($url)
+    {
+        return [
+            CURLOPT_URL => $url,
+            CURLOPT_HEADER => 0,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_FOLLOWLOCATION => 1,
+            CURLOPT_MAXREDIRS => 7,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_ENCODING => '',
+            CURLOPT_CONNECTTIMEOUT => $this->getRequestTimeout(),
+            CURLOPT_TIMEOUT => $this->getRequestTimeout() * 2,
+            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
+                . 'Chrome/64.0.3282.186 Safari/537.36',
+        ];
+    }
+
+    /**
+     * Perform a GET request and return the raw payload ('' on failure).
+     *
      * @param string $url
      *
      * @return string
@@ -125,32 +154,41 @@ abstract class AbstractSource extends AbstractImport
     {
         $ch = \curl_init();
 
-        \curl_setopt_array($ch, [
-            CURLOPT_URL => $url,
-            CURLOPT_HEADER => 0,
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_FOLLOWLOCATION => 1,
-            CURLOPT_MAXREDIRS => 7,
-            CURLOPT_CONNECTTIMEOUT => $this->getRequestTimeout(),
-            CURLOPT_TIMEOUT => $this->getRequestTimeout() * 2,
-            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
-                . 'Chrome/64.0.3282.186 Safari/537.36'
-        ]);
+        \curl_setopt_array($ch, $this->getRequestOptions($url));
 
         $payload = \curl_exec($ch);
+        $status  = (int)\curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        $error   = \curl_error($ch);
+
+        \curl_close($ch);
 
         if ($payload === false) {
             $this->logger->error('Unable to request currency rates.', [
                 'url' => $url,
-                'error' => \curl_error($ch),
+                'error' => $error,
             ]);
 
             return '';
         }
 
-        \curl_close($ch);
+        if ($status >= 400) {
+            $this->logger->error('Currency rate source responded with an error.', [
+                'url' => $url,
+                'status' => $status,
+            ]);
+
+            return '';
+        }
 
         return $payload;
+    }
+
+    /**
+     * @return LoggerInterface
+     */
+    protected function getLogger()
+    {
+        return $this->logger;
     }
 
     protected function processPayload(string $content, $default = null)

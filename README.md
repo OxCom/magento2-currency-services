@@ -6,7 +6,7 @@ This is a module that allows to update currency rates from addition external sou
 
 ###### List of source services
 1. [Finance Google](https://finance.google.com/finance/converter)
-2. [European Central Bank](http://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html)
+2. [European Central Bank](https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html)
 3. [Fixer](http://fixer.io/)
 
 ###### Notes
