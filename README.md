@@ -5,9 +5,10 @@
 This is a module that allows to update currency rates from addition external sources.
 
 ###### List of source services
-1. [Finance Google](https://finance.google.com/finance/converter)
+1. [Google Finance](https://www.google.com/finance/quote/USD-EUR)
 2. [European Central Bank](https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html)
-3. [Fixer](http://fixer.io/)
+3. [Fixer](https://fixer.io/)
+4. [Bank of Canada](https://www.bankofcanada.ca/valet/docs)
 
 ###### Notes
 1. **Fixer**
@@ -26,12 +27,12 @@ This is a module that allows to update currency rates from addition external sou
     You can setup Access Token for Fixer API in your administration panel 
     for Magento.
 
-2. **Finance Google**
+2. **Google Finance**
 
-    New changes were introduces by Google and now it's possible only parse 
-    HTML to get required information.
+    Google does not provide a public currency-rates API. This integration parses
+    the requested currency pair from the Google Finance quote page.
     
-    Be aware about that Google may change it HTML structure at any time
+    Be aware that Google may change its HTML structure at any time.
 
 3. **European Central Bank**
 
@@ -43,6 +44,12 @@ This is a module that allows to update currency rates from addition external sou
     ```
     
     Be aware about low refresh rate
+
+4. **Bank of Canada**
+
+    The keyless Valet API publishes indicative business-daily rates for selected
+    currencies. Rates are based on Canadian dollars and are normally published
+    by 16:30 ET.
 
 ## Install
 ```bash
@@ -71,14 +78,17 @@ Commands are registered via DI, so after install run `setup:upgrade` (and
 `bin/magento list`.
 
 ## Tests
-By default, local test runs alternate weekly between real sources (internet
-connection required) and local fixtures. Setting the `CI` environment variable
-forces fixture (mocked) mode — no network access needed:
+Tests use local fixtures by default, so the regular suite does not require
+network access:
 
 ```bash
 $ composer install
-$ CI=1 vendor/bin/phpunit -c Test/phpunit.xml --no-coverage
+$ vendor/bin/phpunit -c Test/phpunit.xml --no-coverage
 ```
+
+Set `CURRENCY_SERVICES_LIVE_TESTS=1` and `FIXER_FREE_TOKEN` to check the live
+provider services. GitHub Actions runs that live suite against `master` every
+Monday and Friday at 06:00 UTC.
 
 Composer scripts are available for all checks:
 

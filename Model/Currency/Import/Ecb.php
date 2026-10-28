@@ -11,7 +11,7 @@ use OxCom\MagentoCurrencyServices\Model\Currency\Import\Ecb\Rates;
  */
 class Ecb extends AbstractSource
 {
-    public const SOURCE_NAME = 'google';
+    public const SOURCE_NAME = 'ecb';
 
     /**
      * Daily reference rates feed. HTTPS only: the plain HTTP address answers with a 301 redirect.

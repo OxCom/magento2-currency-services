@@ -15,24 +15,23 @@ class Rates extends AbstractDto
     /**
      * @var double
      */
-    protected $rate;
+    protected $rate = null;
 
     /**
      * User constructor.
      *
      * @param array|object|null $object
-     * @param int               $value Requested value
      */
-    public function __construct($object = null, $value = 1)
+    public function __construct($object = null)
     {
         parent::__construct($object);
 
-        // $object should be result of match
-        $match = $this->val($object, 1, []);
-        $rate  = $this->val($match, 1, 0);
+        // $object should contain the result of the quote-page match.
+        $rate = \str_replace(',', '', (string)$this->val($object, 1, ''));
 
-        $rate       = \str_replace(',', '.', $rate);
-        $this->rate = \bcdiv($rate, ($value < 0 ? 1 : $value), AbstractSource::SCALE);
+        if (\is_numeric($rate) && (float)$rate > 0) {
+            $this->rate = \bcdiv($rate, '1', AbstractSource::SCALE);
+        }
     }
 
     /**

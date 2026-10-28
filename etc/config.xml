@@ -15,6 +15,10 @@
                 <timeout>3</timeout>
                 <delay>1</delay>
             </google>
+            <bank_of_canada>
+                <timeout>3</timeout>
+                <delay>1</delay>
+            </bank_of_canada>
         </currency>
     </default>
 </config>

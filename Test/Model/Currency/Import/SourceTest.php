@@ -2,6 +2,7 @@
 
 namespace OxCom\MagentoCurrencyServices\Test\Model\Currency\Import;
 
+use OxCom\MagentoCurrencyServices\Model\Currency\Import\BankOfCanada;
 use OxCom\MagentoCurrencyServices\Model\Currency\Import\Ecb;
 use OxCom\MagentoCurrencyServices\Model\Currency\Import\Fixer;
 use OxCom\MagentoCurrencyServices\Model\Currency\Import\Google;
@@ -22,7 +23,7 @@ class SourceTest extends AbstractTestCase
      * @param string $sourceClass
      * @param string $from
      * @param string $to
-     * @param double $expected
+     * @param float $expected
      *
      * @throws \ReflectionException
      */
@@ -38,7 +39,7 @@ class SourceTest extends AbstractTestCase
         $value = $method->invoke($source, $from, $to);
         $dx    = \microtime(true) - $time;
 
-        $this->assertTrue($dx > 1, 'Delay should be more that 1 sec');
+        $this->assertGreaterThanOrEqual(1, $dx, 'Delay should be at least one second');
         $this->assertNotNull($value, "There is no response from source");
         $this->assertTrue($value > 0, "There should be value more than 0");
 
@@ -67,7 +68,7 @@ class SourceTest extends AbstractTestCase
         $value = $method->invoke($source, $from, $from);
         $dx    = \microtime(true) - $time;
 
-        $this->assertTrue($dx > 1, 'Delay should be more that 1 sec');
+        $this->assertGreaterThanOrEqual(1, $dx, 'Delay should be at least one second');
         $this->assertEquals(1, $value);
         $this->assertTrue($value > 0, "There should be value more than 0");
     }
@@ -81,6 +82,7 @@ class SourceTest extends AbstractTestCase
             [Google::class, 'USD', 'EUR', 0.885715],
             [Fixer::class, 'USD', 'EUR', 0.88726],
             [Ecb::class, 'USD', 'EUR', 0.892857],
+            [BankOfCanada::class, 'USD', 'CAD', 1.35],
         ];
     }
 

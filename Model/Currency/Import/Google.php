@@ -12,8 +12,7 @@ use OxCom\MagentoCurrencyServices\Model\Currency\Import\Google\Rates;
 class Google extends AbstractSource
 {
     public const SOURCE_NAME = 'google';
-    // phpcs:ignore Generic.Files.LineLength.TooLong
-    public const SOURCE_LINK = 'https://www.google.com/search?safe=off&q={{VALUE}}+{{CURRENCY_FROM}}+{{CURRENCY_TO}}&hl=en-EN';
+    public const SOURCE_LINK = 'https://www.google.com/finance/quote/{{CURRENCY_FROM}}-{{CURRENCY_TO}}?hl=en&gl=US';
 
     /**
      * Retrieve rate
@@ -30,32 +29,28 @@ class Google extends AbstractSource
         // @codingStandardsIgnoreStop
         $this->doRequestDelay();
 
-        // there should not be any calls
+        // No remote request is needed when the currencies are identical.
         if ($currencyFrom === $currencyTo) {
             return 1;
         }
-
-        $value = \pow(10, AbstractSource::SCALE);
 
         $rate = null;
         $url  = strtr(static::SOURCE_LINK, [
             '{{CURRENCY_FROM}}' => $currencyFrom,
             '{{CURRENCY_TO}}'   => $currencyTo,
-            '{{VALUE}}'         => $value,
         ]);
 
         try {
-            // do we really should do request for the same currency?
-            if ($currencyFrom === $currencyTo) {
-                return 1;
-            }
-
             $response = $this->request($url);
-
             $matches = [];
-            \preg_match_all('/value="([0-9|,|.]+)"[^<]+type="number"/mi', $response, $matches);
+            $pair = \preg_quote($currencyFrom . ' / ' . $currencyTo, '/');
+            \preg_match(
+                '/title="' . $pair . '".{0,10000}?jsname="Pdsbrc"[^>]*>\s*<span>([0-9,.]+)<\/span>/si',
+                $response,
+                $matches
+            );
 
-            $rates = new Rates($matches, $value);
+            $rates = new Rates($matches);
             $rate  = $rates->getRates($currencyFrom, $currencyTo);
 
             if (empty($rate)) {

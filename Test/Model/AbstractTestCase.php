@@ -39,19 +39,11 @@ abstract class AbstractTestCase extends TestCase
     /**
      * Decide if tests should hit real endpoints or use fixtures.
      *
-     * CI always runs against fixtures. Locally, every second week the tests
-     * run against real sources to detect provider changes early.
+     * Tests use fixtures unless live provider checks are explicitly enabled.
      */
     protected static function detectRealMode(): bool
     {
-        if (\getenv('CI')) {
-            return false;
-        }
-
-        $date = new \DateTime();
-        $week = (int)$date->format("W");
-
-        return $week % 2 === 0;
+        return \getenv('CURRENCY_SERVICES_LIVE_TESTS') === '1';
     }
 
     /**

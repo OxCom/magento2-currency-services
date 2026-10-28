@@ -2,6 +2,7 @@
 
 namespace OxCom\MagentoCurrencyServices\Test\Generate;
 
+use OxCom\MagentoCurrencyServices\Model\Currency\Import\BankOfCanada;
 use OxCom\MagentoCurrencyServices\Model\Currency\Import\Ecb;
 use OxCom\MagentoCurrencyServices\Model\Currency\Import\Fixer;
 use OxCom\MagentoCurrencyServices\Model\Currency\Import\Google;
@@ -22,6 +23,10 @@ class Fixtures
     {
         $rsp = '';
         switch ($source) {
+            case BankOfCanada::class:
+                $rsp = \file_get_contents(__DIR__ . '/Fixture/bank-of-canada.json');
+                break;
+
             case Ecb::class:
                 $rsp = \file_get_contents(__DIR__ . '/Fixture/ecb.xml');
                 break;
