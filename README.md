@@ -5,9 +5,10 @@
 This is a module that allows to update currency rates from addition external sources.
 
 ###### List of source services
-1. [Finance Google](https://finance.google.com/finance/converter)
-2. [European Central Bank](http://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html)
-3. [Fixer](http://fixer.io/)
+1. [Google Finance](https://www.google.com/finance/quote/USD-EUR)
+2. [European Central Bank](https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html)
+3. [Fixer](https://fixer.io/)
+4. [Bank of Canada](https://www.bankofcanada.ca/valet/docs)
 
 ###### Notes
 1. **Fixer**
@@ -26,12 +27,12 @@ This is a module that allows to update currency rates from addition external sou
     You can setup Access Token for Fixer API in your administration panel 
     for Magento.
 
-2. **Finance Google**
+2. **Google Finance**
 
-    New changes were introduces by Google and now it's possible only parse 
-    HTML to get required information.
+    Google does not provide a public currency-rates API. This integration parses
+    the requested currency pair from the Google Finance quote page.
     
-    Be aware about that Google may change it HTML structure at any time
+    Be aware that Google may change its HTML structure at any time.
 
 3. **European Central Bank**
 
@@ -44,6 +45,12 @@ This is a module that allows to update currency rates from addition external sou
     
     Be aware about low refresh rate
 
+4. **Bank of Canada**
+
+    The keyless Valet API publishes indicative business-daily rates for selected
+    currencies. Rates are based on Canadian dollars and are normally published
+    by 16:30 ET.
+
 ## Install
 ```bash
 $ composer require oxcom/magento2-currency-services
@@ -53,11 +60,14 @@ $ bin/magento setup:di:compile
 ```
 
 ## Tests
-Test will be performed on real sources, so internet connection is required.
+Tests always use the live provider services, so an internet connection and a
+`FIXER_FREE_TOKEN` environment variable are required.
 
 ```bash
 $ composer install
-$ vendor/bin/phpunit -c Test/phpunit.xml
+$ FIXER_FREE_TOKEN=your-token vendor/bin/phpunit -c Test/phpunit.xml
 ```
 
-Some info how to run tests in [Travis + Magento Module](https://gordonlesti.com/magento2-extension-development-with-travis-ci/)
+GitHub Actions runs the live provider suite against `master` every Monday and
+Friday at 06:00 UTC.
+

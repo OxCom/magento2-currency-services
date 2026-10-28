@@ -16,6 +16,10 @@
                     <item name="label" xsi:type="string">Google</item>
                     <item name="class" xsi:type="string">OxCom\MagentoCurrencyServices\Model\Currency\Import\Google</item>
                 </item>
+                <item name="bank_of_canada" xsi:type="array">
+                    <item name="label" xsi:type="string">Bank of Canada</item>
+                    <item name="class" xsi:type="string">OxCom\MagentoCurrencyServices\Model\Currency\Import\BankOfCanada</item>
+                </item>
             </argument>
         </arguments>
     </type>

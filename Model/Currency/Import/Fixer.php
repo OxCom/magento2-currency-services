@@ -12,8 +12,8 @@ use OxCom\MagentoCurrencyServices\Model\Currency\Import\Fixer\Rates;
 class Fixer extends AbstractSource
 {
     const SOURCE_NAME      = 'fixer';
-    const SOURCE_LINK      = 'http://data.fixer.io/api/latest?access_key={{TOKEN}}&base={{FROM}}&symbols={{TO}}';
-    const SOURCE_LINK_FREE = 'http://data.fixer.io/api/latest?access_key={{TOKEN}}';
+    const SOURCE_LINK      = 'https://data.fixer.io/api/latest?access_key={{TOKEN}}&base={{FROM}}&symbols={{TO}}';
+    const SOURCE_LINK_FREE = 'https://data.fixer.io/api/latest?access_key={{TOKEN}}';
 
     /**
      * Retrieve rate
@@ -50,7 +50,7 @@ class Fixer extends AbstractSource
             $data    = $this->processPayload($payload);
             $rates   = new Rates($data);
 
-            if (!empty($data) && empty($data->success)) {
+            if (!empty($data) && empty($data['success'])) {
                 // example: {"success":false,"error":{"code":105,"type":"base_currency_access_restricted"}}
                 $url  = strtr(static::SOURCE_LINK_FREE, [
                     '{{TOKEN}}' => $this->getAccessToken(),
@@ -86,7 +86,7 @@ class Fixer extends AbstractSource
                     $baseFromRate = $rates->getRates($currencyFrom);
                     $baseToRate   = $rates->getRates($currencyTo);
 
-                    if (empty($baseFromRate) || $baseToRate) {
+                    if (empty($baseFromRate) || empty($baseToRate)) {
                         throw new \Exception();
                     }
 

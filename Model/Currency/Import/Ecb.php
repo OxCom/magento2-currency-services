@@ -11,8 +11,8 @@ use OxCom\MagentoCurrencyServices\Model\Currency\Import\Ecb\Rates;
  */
 class Ecb extends AbstractSource
 {
-    const SOURCE_NAME = 'google';
-    const SOURCE_LINK = 'http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml';
+    const SOURCE_NAME = 'ecb';
+    const SOURCE_LINK = 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml';
 
     /**
      * Retrieve rate

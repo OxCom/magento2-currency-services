@@ -1,0 +1,48 @@
+name: Live provider tests
+
+on:
+  schedule:
+    - cron: '0 6 * * 1,5'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test live currency providers
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      FIXER_FREE_TOKEN: ${{ secrets.FIXER_FREE_TOKEN }}
+      MAGENTO_USERNAME: ${{ secrets.MAGENTO_USERNAME }}
+      MAGENTO_PASSWORD: ${{ secrets.MAGENTO_PASSWORD }}
+
+    steps:
+      - name: Check out master
+        uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: bcmath, curl, json, simplexml
+          coverage: none
+
+      - name: Verify required secrets
+        run: |
+          if [ -z "$MAGENTO_USERNAME" ] || [ -z "$MAGENTO_PASSWORD" ] || [ -z "$FIXER_FREE_TOKEN" ]; then
+            echo "::error::MAGENTO_USERNAME, MAGENTO_PASSWORD, and FIXER_FREE_TOKEN secrets are required"
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: |
+          composer config http-basic.repo.magento.com "$MAGENTO_USERNAME" "$MAGENTO_PASSWORD"
+          composer require magento/framework:^103.0 --no-update
+          composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Test live providers
+        run: vendor/bin/phpunit -c Test/phpunit.xml --no-coverage

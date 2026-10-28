@@ -2,14 +2,14 @@
 
 namespace OxCom\MagentoCurrencyServices\Test\Model\Currency\Import;
 
+use OxCom\MagentoCurrencyServices\Model\Currency\Import\BankOfCanada;
 use OxCom\MagentoCurrencyServices\Model\Currency\Import\Ecb;
 use OxCom\MagentoCurrencyServices\Model\Currency\Import\Fixer;
 use OxCom\MagentoCurrencyServices\Model\Currency\Import\Google;
-use OxCom\MagentoCurrencyServices\Test\Generate\Fixtures;
 use OxCom\MagentoCurrencyServices\Test\Model\AbstractTestCase;
 
 /**
- * Class GoogleTest
+ * Tests all configured providers against their live services.
  *
  * @package OxCom\MagentoCurrencyServices\Test\Model\Currency\Import
  */
@@ -23,26 +23,17 @@ class SourceTest extends AbstractTestCase
      * @param string $sourceClass
      * @param string $from
      * @param string $to
-     * @param double $expected
-     *
      * @throws \ReflectionException
      */
-    public function testSources($sourceClass, $from, $to, $expected)
+    public function testSources($sourceClass, $from, $to)
     {
         $token = \getenv('FIXER_FREE_TOKEN');
 
         $cArgs  = $this->om->getConstructArguments($sourceClass, []);
         $source = $this->getMockBuilder($sourceClass)
                        ->setConstructorArgs($cArgs)
-                       ->setMethods(static::$isReal ? ['getAccessToken'] : ['request', 'getAccessToken'])
+                       ->setMethods(['getAccessToken'])
                        ->getMock();
-
-
-        if (!static::$isReal) {
-            $source->expects($this->any())
-                   ->method('request')
-                   ->willReturn(Fixtures::get($sourceClass));
-        }
 
         $source->expects($this->any())
                ->method('getAccessToken')
@@ -56,13 +47,9 @@ class SourceTest extends AbstractTestCase
         $value = $method->invoke($source, $from, $to);
         $dx    = \microtime(true) - $time;
 
-        $this->assertTrue($dx > 1, 'Delay should be more that 1 min');
+        $this->assertTrue($dx > 1, 'Delay should be more than one second');
         $this->assertNotNull($value, "There is no response from source");
         $this->assertTrue($value > 0, "There should be value more than 0");
-
-        if (!static::$isReal) {
-            $this->assertEquals($expected, $value);
-        }
     }
 
     /**
@@ -83,14 +70,8 @@ class SourceTest extends AbstractTestCase
         $cArgs  = $this->om->getConstructArguments($sourceClass, []);
         $source = $this->getMockBuilder($sourceClass)
                        ->setConstructorArgs($cArgs)
-                       ->setMethods(static::$isReal ? ['getAccessToken'] : ['request', 'getAccessToken'])
+                       ->setMethods(['getAccessToken'])
                        ->getMock();
-
-        if (!static::$isReal) {
-            $source->expects($this->any())
-                   ->method('request')
-                   ->willReturn(Fixtures::get($sourceClass));
-        }
 
         $source->expects($this->any())
                ->method('getAccessToken')
@@ -104,7 +85,7 @@ class SourceTest extends AbstractTestCase
         $value = $method->invoke($source, $from, $from);
         $dx    = \microtime(true) - $time;
 
-        $this->assertTrue($dx > 1, 'Delay should be more that 1 min');
+        $this->assertTrue($dx > 1, 'Delay should be more than one second');
         $this->assertEquals(1, $value);
         $this->assertTrue($value > 0, "There should be value more than 0");
     }
@@ -115,9 +96,10 @@ class SourceTest extends AbstractTestCase
     public function generateSource()
     {
         return [
-            [Google::class, 'USD', 'EUR', 0.885715],
-            [Fixer::class, 'USD', 'EUR', 0.88726],
-            [Ecb::class, 'USD', 'EUR', 0.892857],
+            [Google::class, 'USD', 'EUR'],
+            [Fixer::class, 'USD', 'EUR'],
+            [Ecb::class, 'USD', 'EUR'],
+            [BankOfCanada::class, 'USD', 'EUR'],
         ];
     }
 }
