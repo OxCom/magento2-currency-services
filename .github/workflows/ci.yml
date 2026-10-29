@@ -170,9 +170,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - php: '8.1'
-            magento: '^103.0'
-            experimental: false
           - php: '8.3'
             magento: '^103.0'
             experimental: false
