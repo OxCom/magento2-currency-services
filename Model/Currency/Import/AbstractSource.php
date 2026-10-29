@@ -164,7 +164,7 @@ abstract class AbstractSource extends AbstractImport
 
         if ($payload === false) {
             $this->logger->error('Unable to request currency rates.', [
-                'url' => $url,
+                'url' => $this->maskUrl($url),
                 'error' => $error,
             ]);
 
@@ -173,7 +173,7 @@ abstract class AbstractSource extends AbstractImport
 
         if ($status >= 400) {
             $this->logger->error('Currency rate source responded with an error.', [
-                'url' => $url,
+                'url' => $this->maskUrl($url),
                 'status' => $status,
             ]);
 
@@ -181,6 +181,18 @@ abstract class AbstractSource extends AbstractImport
         }
 
         return $payload;
+    }
+
+    /**
+     * Hide the access token so a URL can be written to logs and admin messages.
+     *
+     * @param string $url
+     *
+     * @return string
+     */
+    protected function maskUrl($url)
+    {
+        return \preg_replace('/(access_key=)[^&]*/', '$1***', (string)$url);
     }
 
     /**
