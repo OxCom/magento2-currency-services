@@ -98,7 +98,7 @@ class Fixer extends AbstractSource
                 throw new \Exception();
             }
         } catch (\Exception $e) {
-            $this->_messages[] = __("We can't retrieve a rate from %1.", $this->maskUrl($url));
+            $this->addRetrieveError($url, $this->getLastRequestError());
         }
 
         return (float)$rate;

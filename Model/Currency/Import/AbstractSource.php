@@ -35,6 +35,13 @@ abstract class AbstractSource extends AbstractImport
     private $logger;
 
     /**
+     * Why the last request() call failed, '' when it succeeded.
+     *
+     * @var string
+     */
+    private $lastRequestError = '';
+
+    /**
      * @param CurrencyFactory $currencyFactory
      * @param ScopeConfigInterface $scopeConfig
      * @param LoggerInterface $logger
@@ -97,7 +104,7 @@ abstract class AbstractSource extends AbstractImport
     /**
      * Get access token
      *
-     * @return int|string
+     * @return string
      */
     protected function getAccessToken()
     {
@@ -106,7 +113,7 @@ abstract class AbstractSource extends AbstractImport
             return static::DEFAULT_TOKEN;
         }
 
-        $value = (int)$this->config->getValue(
+        $value = (string)$this->config->getValue(
             'currency/' . $source . '/token',
             ScopeInterface::SCOPE_STORE
         );
@@ -143,44 +150,106 @@ abstract class AbstractSource extends AbstractImport
         ];
     }
 
-    /**
-     * Perform a GET request and return the raw payload ('' on failure).
-     *
-     * @param string $url
-     *
-     * @return string
-     */
     protected function request($url)
     {
-        $ch = \curl_init();
+        $this->lastRequestError = '';
 
-        \curl_setopt_array($ch, $this->getRequestOptions($url));
+        $options = $this->getRequestOptions($url);
+        $ch      = \curl_init();
+
+        \curl_setopt_array($ch, $options);
 
         $payload = \curl_exec($ch);
         $status  = (int)\curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-        $error   = \curl_error($ch);
+        $errno   = \curl_errno($ch);
+        $error   = $this->maskUrl(\curl_error($ch));
+        $context = [
+            'url' => $this->maskUrl($url),
+            'status' => $status,
+            'errno' => $errno,
+            'error' => $error,
+            'ip' => (string)\curl_getinfo($ch, CURLINFO_PRIMARY_IP),
+            'time' => (float)\curl_getinfo($ch, CURLINFO_TOTAL_TIME),
+            'connect_timeout' => ($options[CURLOPT_CONNECTTIMEOUT] ?? 0),
+            'timeout' => ($options[CURLOPT_TIMEOUT] ?? 0),
+        ];
 
         \curl_close($ch);
 
         if ($payload === false) {
-            $this->logger->error('Unable to request currency rates.', [
-                'url' => $this->maskUrl($url),
-                'error' => $error,
-            ]);
+            $this->lastRequestError = $this->describeTransportError($errno, $error, $options);
+            $this->logger->error('Unable to request currency rates.', $context);
 
             return '';
         }
 
         if ($status >= 400) {
-            $this->logger->error('Currency rate source responded with an error.', [
-                'url' => $this->maskUrl($url),
-                'status' => $status,
-            ]);
+            $this->lastRequestError = \sprintf('HTTP %d', $status);
+            $this->logger->error('Currency rate source responded with an error.', $context);
 
             return '';
         }
 
+        if ($payload === '') {
+            $this->lastRequestError = \sprintf('empty response, HTTP %d', $status);
+            $this->logger->error('Currency rate source returned an empty response.', $context);
+
+            return '';
+        }
+
+        $this->logger->debug('Currency rates requested.', $context + ['size' => \strlen($payload)]);
+
         return $payload;
+    }
+
+    /**
+     * Turn a cURL failure into a short reason that can be shown to the admin user.
+     *
+     * @param int $errno
+     * @param string $error
+     * @param array $options
+     *
+     * @return string
+     */
+    protected function describeTransportError($errno, $error, array $options)
+    {
+        if ($errno === CURLE_OPERATION_TIMEDOUT) {
+            return \sprintf(
+                'request timed out (connect timeout %ds, total timeout %ds): %s',
+                ($options[CURLOPT_CONNECTTIMEOUT] ?? 0),
+                ($options[CURLOPT_TIMEOUT] ?? 0),
+                $error
+            );
+        }
+
+        return \sprintf('cURL error %d: %s', $errno, $error);
+    }
+
+    /**
+     * Why the last request() call failed, '' when it succeeded.
+     *
+     * @return string
+     */
+    protected function getLastRequestError()
+    {
+        return $this->lastRequestError;
+    }
+
+    /**
+     * Collect the admin message for a failed source, with the reason when one is known.
+     * The reason is masked too: cURL error text may quote the request URL.
+     *
+     * @param string $url
+     * @param string $reason
+     */
+    protected function addRetrieveError($url, $reason = '')
+    {
+        $url    = $this->maskUrl($url);
+        $reason = $this->maskUrl($reason);
+
+        $this->_messages[] = $reason === ''
+            ? \__("We can't retrieve a rate from %1.", $url)
+            : \__("We can't retrieve a rate from %1: %2", $url, $reason);
     }
 
     /**

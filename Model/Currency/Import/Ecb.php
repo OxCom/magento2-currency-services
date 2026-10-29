@@ -50,18 +50,30 @@ class Ecb extends AbstractSource
             return 1;
         }
 
-        $rate = null;
-        $url  = static::SOURCE_LINK;
+        $rate     = null;
+        $url      = static::SOURCE_LINK;
+        $failures = [];
+        $response = '';
 
         try {
-            $list = $this->parseDailyXml($this->request($url));
+            $response = $this->request($url);
+            $list     = $this->parseDailyXml($response);
 
             if (empty($list)) {
-                $url  = static::SOURCE_LINK_FALLBACK;
-                $list = $this->parseSdmxCsv($this->request($url));
+                $failures[$url] = $this->getFailureReason($response);
+                $this->getLogger()->warning('ECB daily feed is unusable, trying the fallback.', [
+                    'url' => $url,
+                    'reason' => $failures[$url],
+                    'response' => \substr($response, 0, 500),
+                ]);
+
+                $url      = static::SOURCE_LINK_FALLBACK;
+                $response = $this->request($url);
+                $list     = $this->parseSdmxCsv($response);
             }
 
             if (empty($list)) {
+                $failures[$url] = $this->getFailureReason($response);
                 throw new \Exception('Rate list is empty.');
             }
 
@@ -70,13 +82,41 @@ class Ecb extends AbstractSource
         } catch (\Exception $e) {
             $this->getLogger()->error('Unable to parse currency rates.', [
                 'url' => $url,
+                'failures' => $failures,
+                'response' => \substr($response, 0, 500),
                 'exception' => $e,
             ]);
 
-            $this->_messages[] = __("We can't retrieve a rate from %1.", $url);
+            foreach ($failures as $failedUrl => $reason) {
+                $this->addRetrieveError($failedUrl, $reason);
+            }
+
+            if (empty($failures)) {
+                $this->addRetrieveError($url, $e->getMessage());
+            }
         }
 
         return (float)$rate;
+    }
+
+    /**
+     * Explain why a feed payload could not be used.
+     *
+     * @param string $response
+     *
+     * @return string
+     */
+    private function getFailureReason($response)
+    {
+        $reason = $this->getLastRequestError();
+
+        if ($reason !== '') {
+            return $reason;
+        }
+
+        return $response === ''
+            ? 'empty response'
+            : \sprintf('unexpected response format (%d bytes)', \strlen($response));
     }
 
     /**

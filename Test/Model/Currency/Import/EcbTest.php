@@ -124,8 +124,61 @@ class EcbTest extends AbstractTestCase
         $this->assertEquals(0.0, $this->convert($source, 'USD', 'EUR'));
 
         $messages = $source->getMessages();
-        $this->assertNotEmpty($messages);
-        $this->assertStringContainsString(Ecb::SOURCE_LINK_FALLBACK, (string)$messages[0]);
+        $this->assertCount(2, $messages);
+        $this->assertStringContainsString(Ecb::SOURCE_LINK, (string)$messages[0]);
+        $this->assertStringContainsString(Ecb::SOURCE_LINK_FALLBACK, (string)$messages[1]);
+    }
+
+    /**
+     * Every failed feed is reported together with the reason, not only the last tried address.
+     *
+     * @throws \ReflectionException
+     */
+    public function testMessagesExplainWhyEachSourceFailed()
+    {
+        $source = $this->createEcbMock([
+            Ecb::SOURCE_LINK => static::BROKEN_PAYLOAD,
+            Ecb::SOURCE_LINK_FALLBACK => '',
+        ]);
+
+        $this->convert($source, 'USD', 'EUR');
+
+        $messages = $source->getMessages();
+        $this->assertCount(2, $messages);
+        $this->assertStringContainsString('unexpected response format', (string)$messages[0]);
+        $this->assertStringContainsString('empty response', (string)$messages[1]);
+    }
+
+    /**
+     * A transport failure keeps the cURL reason so it can reach the admin message.
+     *
+     * @throws \ReflectionException
+     */
+    public function testRequestKeepsTransportError()
+    {
+        $source  = $this->createEcbMock(null);
+        $request = new \ReflectionMethod($source, 'request');
+        $error   = new \ReflectionMethod($source, 'getLastRequestError');
+
+        // nothing listens on port 1, the connection is refused right away
+        $this->assertSame('', $request->invoke($source, 'http://127.0.0.1:1/'));
+        $this->assertStringStartsWith('cURL error ' . CURLE_COULDNT_CONNECT, $error->invoke($source));
+    }
+
+    /**
+     * Timeouts name the configured limits, so the admin knows which setting to raise.
+     *
+     * @throws \ReflectionException
+     */
+    public function testTimeoutReasonNamesConfiguredLimits()
+    {
+        $source   = $this->createEcbMock([]);
+        $describe = new \ReflectionMethod($source, 'describeTransportError');
+        $options  = [CURLOPT_CONNECTTIMEOUT => 3, CURLOPT_TIMEOUT => 6];
+
+        $reason = $describe->invoke($source, CURLE_OPERATION_TIMEDOUT, 'Connection timed out', $options);
+
+        $this->assertStringContainsString('timed out (connect timeout 3s, total timeout 6s)', $reason);
     }
 
     /**
