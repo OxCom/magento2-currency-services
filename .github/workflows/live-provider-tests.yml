@@ -16,8 +16,6 @@ jobs:
     env:
       CURRENCY_SERVICES_LIVE_TESTS: '1'
       FIXER_FREE_TOKEN: ${{ secrets.FIXER_FREE_TOKEN }}
-      MAGENTO_USERNAME: ${{ secrets.MAGENTO_USERNAME }}
-      MAGENTO_PASSWORD: ${{ secrets.MAGENTO_PASSWORD }}
 
     steps:
       - name: Check out master
@@ -33,16 +31,14 @@ jobs:
           extensions: bcmath, curl, json, simplexml
           coverage: none
 
-      - name: Verify required secrets
+      - name: Check optional secrets
         run: |
-          if [ -z "$MAGENTO_USERNAME" ] || [ -z "$MAGENTO_PASSWORD" ] || [ -z "$FIXER_FREE_TOKEN" ]; then
-            echo "::error::MAGENTO_USERNAME, MAGENTO_PASSWORD, and FIXER_FREE_TOKEN secrets are required"
-            exit 1
+          if [ -z "$FIXER_FREE_TOKEN" ]; then
+            echo "::warning::FIXER_FREE_TOKEN secret is not set; live Fixer tests will be skipped"
           fi
 
       - name: Install dependencies
         run: |
-          composer config http-basic.repo.magento.com "$MAGENTO_USERNAME" "$MAGENTO_PASSWORD"
           composer require magento/framework:^103.0 --no-update
           composer install --prefer-dist --no-interaction --no-progress
 

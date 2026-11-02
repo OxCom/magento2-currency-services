@@ -95,7 +95,13 @@ class SourceTest extends AbstractTestCase
      */
     protected function createSourceMock($sourceClass)
     {
-        $token   = \getenv('FIXER_FREE_TOKEN');
+        $token = (string)\getenv('FIXER_FREE_TOKEN');
+
+        // Fixer rejects keyless requests on every plan, free included (error 101 missing_access_key).
+        if (static::$isReal && $sourceClass === Fixer::class && $token === '') {
+            $this->markTestSkipped('FIXER_FREE_TOKEN is not set; live Fixer check skipped');
+        }
+
         $methods = static::$isReal ? ['getAccessToken'] : ['request', 'getAccessToken'];
 
         $cArgs  = $this->om->getConstructArguments($sourceClass, []);
